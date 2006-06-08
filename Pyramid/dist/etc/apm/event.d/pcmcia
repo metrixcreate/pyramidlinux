@@ -1,0 +1,56 @@
+#!/bin/sh
+
+# This script was provided for those systems with broken APM and those
+# systems with problem cards that cannot handle a suspend/resume cycle.
+# The average user will not need to activate it.  Systems with broken
+# APM will not correctly issue a "cardctl suspend" and "cardctl resume"
+# during a suspend/resume cycle.  However, the apm daemon can be used
+# to run this script which will properly power down and power up your
+# cards.  Some drivers, notably the PCMCIA SCSI drivers, cannot recover
+# from a suspend/resume cycle.  When using a PCMCIA SCSI card, always
+# use "cardctl eject" prior to suspending the system.  This script can
+# be used to issue the eject command and other necessary commands, such
+# as unmounting filesystems, etc.
+#
+# To activate this script, create a file /etc/pcmcia/apm.opts.  This
+# file should contain one line.  Either
+#
+# APM=suspend
+#
+# if the PCMCIA cards are supposed to be suspended before the system is
+# suspended or
+#
+# APM=eject
+#
+# if the PCMCIA cards are supposed to be ejected before the system is
+# suspended.
+
+test -r /etc/pcmcia/apm.opts || exit 0
+. /etc/pcmcia/apm.opts
+
+case "$1" in
+suspend)
+	case "$APM" in
+	suspend)
+                # May be necessary to prevent system freeze if pcmcia
+                # network card is in.
+		#/sbin/ifconfig eth0 down # prevent "card busy"
+		/sbin/cardctl suspend
+		;;
+	eject)
+                # May be necessary to prevent system freeze if pcmcia
+                # network card is in.
+		#/sbin/ifconfig eth0 down # prevent "card busy"
+		/sbin/cardctl eject
+		;;
+	esac
+	;;
+resume)
+	case "$APM" in
+	suspend)
+		/sbin/cardctl resume;;
+	eject)
+		/sbin/cardctl insert;;
+	esac
+	;;
+esac

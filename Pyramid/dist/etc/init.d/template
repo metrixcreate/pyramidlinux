@@ -1,0 +1,40 @@
+#!/bin/sh
+
+DAEMON="/sbin/dhcrelay"
+NAME="dhcrelay"
+OPTIONS=""
+
+if ( [ -r "/etc/default/$NAME" ] ); then
+  . /etc/default/$NAME
+fi
+
+if ( [ ! -x "$DAEMON" ] ); then
+  echo "Can't execute $DAEMON, exiting."
+  exit 1
+fi
+
+case "$1" in
+  start)
+    echo -n "Starting $NAME: "
+    $DAEMON $OPTIONS
+    echo "$NAME. "
+    ;;
+  stop)
+    echo -n "Stopping $NAME: "
+    killall $NAME
+    echo "$NAME. "
+    ;;
+  restart)
+    echo -n "Restarting $NAME: "
+    $0 stop > /dev/null 2>&1
+    sleep 1
+    $0 start > /dev/null 2>&1
+    echo "$NAME. "
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0

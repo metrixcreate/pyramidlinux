@@ -1,0 +1,48 @@
+#! /bin/sh
+
+set -e
+
+DAEMON=/usr/sbin/thttpd
+NAME=thttpd
+PIDFILE=/var/run/thttpd.pid
+
+INIT=/etc/init.d/thttpd
+CONFFILE=/etc/thttpd/thttpd.conf
+OPTIONS="-C $CONFFILE -i $PIDFILE -nos -h localhost"
+
+if [ ! -f $CONFFILE ]; then
+    exit 1
+fi
+
+test -x $DAEMON || exit 0
+
+case "$1" in
+  start)
+    echo -n "Starting web server: "
+    start-stop-daemon --start --quiet --exec $DAEMON -- $OPTIONS
+    echo "$NAME. "
+    ;;
+  stop)
+    echo -n "Stopping web server: "
+    start-stop-daemon --stop --quiet --pidfile $PIDFILE --name $NAME
+    echo "$NAME. "
+    ;;
+  restart)
+    echo -n "Restarting web server: "
+    $INIT stop > /dev/null 2>&1
+    $INIT start > /dev/null 2>&1
+    echo "$NAME. "
+    ;;
+  force-reload)
+   echo -n "Reloading thttpd configuration files: "
+    $INIT stop > /dev/null 2>&1
+    $INIT start > /dev/null 2>&1
+    echo "$NAME. "
+    ;;
+  *)
+    echo "Usage: /etc/init.d/$NAME {force-reload|start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0

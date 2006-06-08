@@ -1,0 +1,58 @@
+#!/bin/sh
+
+# Defaults - don't touch, edit /etc/default/bind
+OPTIONS=""
+
+test -f /etc/default/bind && . /etc/default/bind
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+test -x /usr/sbin/ndc || exit 0
+
+start () {
+	echo -n "Starting domain name service: named"
+	if [ ! -x /usr/sbin/named ]; then
+	    echo "named binary missing - not starting"
+	    exit 1
+	fi
+	start-stop-daemon --start --quiet \
+	    --pidfile /var/run/named.pid --exec /usr/sbin/named  -- $OPTIONS
+	echo "."	
+}
+
+stop () {
+	echo -n "Stopping domain name service: named"
+	# --exec doesn't catch daemons running deleted instances of named,
+	# as in an upgrade.  Fortunately, --pidfile is only going to hit
+	# things from the pidfile.
+	start-stop-daemon --stop --quiet  \
+	    --pidfile /var/run/named.pid --name named
+	echo "."	
+}
+
+case "$1" in
+    start)
+	start
+    ;;
+
+    stop)
+	stop
+    ;;
+
+    restart|force-reload)
+	stop
+	sleep 2
+	start
+    ;;
+    
+    reload)
+	/usr/sbin/ndc reload
+    ;;
+
+    *)
+	echo "Usage: /etc/init.d/bind {start|stop|reload|restart|force-reload}" >&2
+	exit 1
+    ;;
+esac
+
+exit 0
