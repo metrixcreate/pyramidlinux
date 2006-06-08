@@ -1,0 +1,272 @@
+<?
+/*+-------------------------------------------------------------------------+
+  | Copyright (C) 2004 Panousis Thanos - Dimopoulos Thimios                 |
+  |                                                                         |
+  | This program is free software; you can redistribute it and/or           |
+  | modify it under the terms of the GNU General Public License             |
+  | as published by the Free Software Foundation; either version 2          |
+  | of the License, or (at your option) any later version.                  |
+  |                                                                         |
+  | This program is distributed in the hope that it will be useful,         |
+  | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+  | GNU General Public License for more details.                            |
+  +-------------------------------------------------------------------------+
+  | WifiAdmin: The Free WiFi Web Interface				    |
+  +-------------------------------------------------------------------------+
+  | Send comments to  							    |
+  | - panousis@ceid.upatras.gr						    |
+  | - dimopule@ceid.upatras.gr						    |
+  +-------------------------------------------------------------------------+*/
+
+/**********************************************
+* Script produces a form for the  
+* user to apply new settings to a specific 
+* wireless device
+***********************************************/
+
+/*********************************************************
+* get_iwconfig_params($post): 				
+* Function that parses the output of
+* the user's POST command. Makes the nessecary
+* checks to make sure he doesn't rm -rf's the system
+* and returns the rigth iwconfig command as a string
+* DOESNOT execute the command, justs outputs the string.
+**********************************************************/
+function get_iwconfig_params($post)
+{
+	global $iwconfig_bin;
+	if(!ctype_alnum($post['device']))
+		exit("Illegal characters found in device name string: ".$post['device'].", exiting...");
+
+	echo "<p>Changing settings for device ".$post["device"]."</p>\n<ul>";
+	$cmd = "";
+        if(strlen($post['essid']) )     //do we have an essid to change?
+        {
+		$post['essid'] = escapeshellarg($post['essid']);
+                echo "<li>Changing ESSID to " .$post['essid']. "</li>";
+                $cmd = " essid ".$post['essid'];
+        }
+        /*
+	if(strlen($post['nick']) )     //do we have an essid to change?
+        {
+                $post['nick'] = escapeshellarg($post['nick']);
+                echo "<li>Changing device Nickname to " .$post['nick']. "</li>";
+                $cmd = " nick ".$post['nick'];
+        }
+        */
+        if(trim($post['mode']) != "" )
+        {
+		$post['mode'] = escapeshellarg($post['mode']);
+                echo "<li>Changing mode to " .$post['mode']. "</li>";
+                $cmd = $cmd." mode ".$post['mode'];
+        }//else echo "<p class=error>Channel contains illegal characters, ignored</p>";
+        if(strlen($post['channel']) && ctype_alnum($post['channel']) )
+        {
+                $post['channel'] = escapeshellarg($post['channel']);
+                echo "<li>Changing channel to " .$post['channel']. "</li>";
+                $cmd = $cmd." channel ".$post['channel'];
+        }//else echo "<p class=error>Channel contains illegal characters, ignored</p>";
+	if($post['mode'] != "Ad-Hoc"){
+		if(@(strlen($post['ap']) && ctype_alnum($post['ap'])) )
+		{
+			$post['ap'] = escapeshellarg($post['ap']);
+			echo "<li>Changing AP to " .$post['ap']. "</li>";
+			$cmd = $cmd." ap ".$post['ap'];
+		}//else echo "<p class=error>Access Point contains illegal characters, ignored</p>";
+	}
+        if(strlen($post['rate']) && ctype_alnum($post['rate']))
+        {
+                $post['rate'] = escapeshellarg($post['rate']);
+                echo "<li>Changing Bit Rate to " .$post['rate']. "</li>";
+                $cmd = $cmd." rate ".$post['rate'];
+        }//else echo "<p class=error>Bit rate contains illegal characters, ignored</p>";
+	if(strlen($post['sens']) && ctype_alnum($post['sens']) )
+        {
+                $post['sens'] = escapeshellarg($post['sens']);
+                echo "<li>Changing sensitivity to " .$post['sens']. "</li>";
+                $cmd = $cmd." sens ".$post['sens'];
+        }//else echo "<p class=error>Sensitivity contains illegal characters, ignored</p>";
+	if(strlen($post['retry']) && ctype_alnum($post['retry']) )
+        {
+                $post['retry'] = escapeshellarg($post['retry']);
+                echo "<li>Changing retry limit to " .$post['retry']. "</li>";
+                $cmd = $cmd." retry ".$post['retry'];
+        }//else echo "<p class=error>Retry limit contains illegal characters, ignored</p>";
+	if(strlen($post['rts']) )
+        {
+                $post['rts'] = escapeshellarg($post['rts']);
+                echo "<li>Changing RTS threshold to " .$post['rts']. "</li>";
+                $cmd = $cmd." rts ".$post['rts'];
+        }//else echo "<p class=error>RTS threshold contains illegal characters, ignored</p>";
+	if(strlen($post['frag']) )
+        {
+                $post['frag'] = escapeshellarg($post['frag']);
+                echo "<li>Changing Fragmentation threshold to " .$post['frag']. "</li>";
+                $cmd = $cmd." frag ".$post['frag'];
+        }
+	if(strlen($post['power']) )
+        {
+                $post['power'] = escapeshellarg($post['power']);
+                echo "<li>Changing Power managment to " .$post['power']. "</li>";
+                $cmd = $cmd." power ".$post['power'];
+        }
+	echo "</ul>";
+	if(strlen(trim($cmd))>0)
+		return "$iwconfig_bin ".$post["device"].$cmd;
+	else
+		return 0;
+}
+
+include("./include/header.php");
+?>
+<script src="include/submitonce.js"></script>
+<script src="include/sorttable.js"></script>
+<h2>Wireless Settings (TODO)</h2>
+<?
+if($_SESSION["access_ifs"]!= "true"){
+	echo "<p class = \"error\">You have no permission to access this section of WiFiAdmin</p class = \"error\">";
+	exit();
+}
+
+$iw_data = get_wireless_status();	//function to get ALL wireless info of the box
+
+//START TAB
+if(!isset($_GET['device']) || !array_key_exists ($_GET['device'],$iw_data) ) {		//we need an interface to show
+	foreach($iw_data as $device){
+		$current = $device;
+		break;
+	}
+}
+else{
+	$current = $iw_data[$_GET['device']];
+}
+
+echo "\n<ul id=\"tabnav\">\n";					//create tabs
+foreach ($iw_data as $device)
+{
+	if($current['name'] == $device['name'] )
+		echo "<li id=\"active-tab\"><a href=\"".$_SERVER['PHP_SELF']."?device=".$device['name']."\">".$device['name']."</a></li>\n";      //active-tab for the specific wifi interface
+	else
+		echo "<li class=\"tab\"><a href=\"".$_SERVER['PHP_SELF']."?device=".$device['name']."\">".$device['name']."</a></li>\n";      //non active tab
+
+}
+echo "</ul>";
+//END TAB CREATION
+
+//check whether the user has asked to change setting
+if(isset($_POST['device']))
+{
+        $command = get_iwconfig_params($_POST);
+        if($command)
+	{
+                echo $error = `$command`;
+                if($error)
+                        echo "<p class=error><pre>$error</pre>Some values may not have been applied.<p>";
+        }
+        else
+        echo "<p class=\"error\">No changes made</p>";
+
+        echo "<a href=\"".$_SERVER['PHP_SELF']."?device=".$current['name']."\">Back to settings</a>";
+}
+//print site survey
+elseif(isset($_GET['survey']) )
+{
+        $wif = $current['name'];
+	$cmd = $iwconfig_bin." ".$wif;
+	$output = `$cmd`;
+	$data = parse_iwconfig($output);
+
+	/* Only scan in managed (or ad-hoc) mode */
+	if($data['mode'] == "Master") {
+          `$cmd mode managed`;
+        }
+	
+	$scan_results = get_scan_results($wif);
+	
+	/* Reset mode if we were Master previously */
+ 	if($data['mode'] == "Master") {
+          `$cmd mode master`;
+        }
+
+	if ($scan_results === false)
+		echo "<p class=\"error\"> Device does not support scanning </p>";
+	if (count($scan_results) == 0)
+		echo "<h4>No scan results</h4>";
+	else{
+		echo '<h4>Scan results for device '.$wif.'</h4> 
+		<table class="sortable" id="sort" align="center" cellspacing="0">
+		<tr> <th>#</th>';
+		foreach(array_keys($scan_results[0]) as $header)
+			echo "<th>".$header."</th>";
+		echo "</tr>";
+		foreach ($scan_results as $num => $scan_result) {
+			echo "<tr>";
+			echo "<td>$num</td>";
+			$count = 0;
+			foreach ($scan_result as $value)
+				if($count++ == 1) {
+				  echo "<td><b>".$value."</b></td>";
+				}
+				else {
+				  echo "<td>".$value."</td>";
+				}
+			echo "</tr>";
+		}
+	echo "</table> <p><a href=\"".$_SERVER['PHP_SELF']."?device=".$wif."\">Back to Wireless Settings</a>";
+	}
+
+	/*?>
+	<h4>List of users registered in our community</h4>
+	<table class="t1" align="center" cellspacing="0">
+	<tr bgcolor="#BEC8D1">
+	<?php*/
+}
+else
+{
+	$wif = $current['name'];
+	$cmd = $iwconfig_bin." ".$wif;
+	$output = `$cmd`;
+	echo "<h4>Current settings for device ".$wif."</h4>";
+	$data = parse_iwconfig($output);
+
+//	if($data['mode'] == "Managed" || $data['mode'] == "Ad-Hoc")
+          echo "<p align=\"center\"><a href=\"".$_SERVER['PHP_SELF']."?device=".$current['name']."&survey=1\">[ Site Survey ]</a></p>";
+?>
+
+<table>
+<tr><td>
+<form name="settings" onSubmit="submitonce(this)" action="<?echo $_SERVER['PHP_SELF']."?device=".$current['name']?>" method = "POST">
+<table>
+	<tr><td></td><td><input  type="hidden"  name="device" value="<?echo $wif; ?>"></td><td></td></tr>
+	<tr><td>ESSID: </td><td><input type="text" name="essid" value="<?echo $data['essid']?>"></td></tr>
+	<tr><td>Mode: </td><td><select name="mode">
+	<?
+	  foreach(array("Master","Managed","Ad-Hoc") as $mode) {
+            if($data['mode'] == $mode) {
+              echo "<option selected>$mode</option>";
+            }
+            else {
+              echo "<option>$mode</option>";
+            }
+          }
+        ?>
+        </td></tr>
+	<tr><td>Channel: </td><td><input type="text" name="channel" value="<?echo $data['channel'] ? $data['channel'] : "(n/a)"?>"></td></tr>
+	<?if( $data['mode'] != "Ad-Hoc"){
+	  echo "<tr><td>Access Point: </td><td><input type=\"text\" name=\"ap\" value=\"" . $data['ap'] . "\"></td></tr>"; }?>
+	<tr><td>Bit Rate: </td><td><input type="text" name="rate" value="<?echo $data['rate']?>"></td></tr>
+	<tr><td>Sensitivity: </td><td><input type="text" name="sens" value="<?echo $data['sens']?>"></td></tr>
+	<tr><td>Retry Limit: </td><td><input type="text" name="retry" value="<?echo $data['retry']?>"></td></tr>
+	<tr><td>RTS threshold: </td><td><input type="text" name="rts" value="<?echo $data['rts']?>"></td></tr>
+	<tr><td>Fragment threshold: </td><td><input type="text" name="frag" value="<?echo $data['frag']?>"></td></tr>
+	<tr><td>Power Managment: </td><td><input type="text" name="power" value="<?echo $data['power']?>"></td></tr>
+</table>
+<input type="submit" value="Commit Changes">
+</form>
+</td></tr>
+</table>
+<?
+}
+include("./include/footer.php");
+?>

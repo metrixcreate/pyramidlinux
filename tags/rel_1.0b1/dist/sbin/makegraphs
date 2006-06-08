@@ -1,0 +1,5 @@
+#!/bin/bash
+DOTFILE="/var/tmp/olsr/routes.dot"
+/usr/bin/nc 127.0.0.1 2004 > $DOTFILE
+/usr/bin/dot -Tpng $DOTFILE 2>&->/var/tmp/olsr/routes.png
+/usr/bin/dot -Tsvg $DOTFILE 2>&->/var/tmp/olsr/routes.svg

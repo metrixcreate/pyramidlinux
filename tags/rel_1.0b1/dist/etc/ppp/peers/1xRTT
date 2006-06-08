@@ -1,0 +1,11 @@
+-detach
+/dev/cellmodem
+230400
+debug
+noauth
+defaultroute
+usepeerdns
+show-password
+crtscts
+lock
+connect '/usr/sbin/chat -v -t3 -f /etc/ppp/peers/1xRTT_chat'
