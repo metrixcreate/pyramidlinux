@@ -22,6 +22,10 @@ label 5
 	kernel vmlinuz-2.4.22-pebble
         append console=ttyS0,19200,n8 initrd=shell.img ramdisk_size=8192 root=/dev/ram0 
 
+label 6 
+	kernel vmlinuz-2.6.16-metrix
+        append install_snapshot=yes console=ttys0,19200,n8 initrd=initrd_pyramid.img ramdisk_size=8192 root=/dev/ram0
+
 implicit 0
 display display.msg
 prompt 1
