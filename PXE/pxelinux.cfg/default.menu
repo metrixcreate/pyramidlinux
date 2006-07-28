@@ -1,0 +1,29 @@
+SERIAL 0 19200
+default 1 
+
+label 1 
+	kernel vmlinuz-2.4.22-pebble
+        append console=ttyS0,19200,n8 initrd=dd.img ramdisk_size=8192 root=/dev/ram0 
+
+label 2 
+	kernel vmlinuz-2.6.16-metrix 
+        append console=ttyS0,19200,n8 initrd=initrd_pyramid.img ramdisk_size=8192 root=/dev/ram0
+
+label 3      
+        kernel vmlinuz-2.6.16-metrix
+        append pyramid_shell=yes console=ttyS0,19200,n8 initrd=initrd_pyramid.img ramdisk_size=8192 root=/dev/ram0
+
+
+label 4 
+	kernel vmlinuz-2.4.22-pebble 
+        append console=ttyS0,19200,n8 initrd=initrd_pebble.img ramdisk_size=8192 root=/dev/ram0 
+
+label 5 
+	kernel vmlinuz-2.4.22-pebble
+        append console=ttyS0,19200,n8 initrd=shell.img ramdisk_size=8192 root=/dev/ram0 
+
+implicit 0
+display display.msg
+prompt 1
+timeout 100 
+
