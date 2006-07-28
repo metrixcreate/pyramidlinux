@@ -1,0 +1,48 @@
+
+Firmware for Prism 2.5 cards
+
+Use prism2_srec to update card firmware.  See this HOWTO for more info:
+
+http://linux.junsun.net/intersil-prism/
+
+This is the short version.
+
+
+** * * WARNING WARNING WARNING * * **
+
+This will write firmware to the nvram of your prism2 card.  Very bad things
+can happen if the process is in any way interrupted (loss of power, etc.)
+You can permanently damage your radio card with this code.  Update your
+card firmware at your own risk.
+
+You have been warned.
+
+** * * WARNING WARNING WARNING * * **
+
+
+1) Verify current firmware rev:
+
+# hostap_diag wlan0
+
+
+2) Check for compatibility:
+
+# prism2_srec -v wlan0 pk010101.hex sf010800.hex
+
+
+3) Do it:
+
+# prism2_srec -v -f wlan0 pk010101.hex sf010800.hex
+
+
+4) Reboot (or reload the driver)
+
+# ifconfig wlan0 down; modprobe -r hostap_pci; modprobe hostap_pci
+
+
+5) Verify that the new firmware has been loaded:
+
+# hostap_diag wlan0
+
+
+Good luck!

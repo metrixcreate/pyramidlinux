@@ -1,0 +1,32 @@
+#!/bin/sh
+#
+# Use something like this to pull in rrds from a bunch of 
+# Metrix boxes...
+#
+
+#DEBUG=yes
+
+DATADIR="/var/tmp/rrd/rrd_database"
+
+cd $DATADIR
+
+[ -n "$DEBUG" ] && echo "catlin.rob.swn"
+./update-remote catlin.rob.swn 10000 eth0 wlan0
+./update-remote-gauge catlin.rob.swn 10002 users
+
+[ -n "$DEBUG" ] && echo "net4521.dexter.swn"
+./update-remote-radio net4521.dexter.swn 10000 wlan0 wlan1
+./update-remote net4521.dexter.swn 10002 wlan0 wlan1
+
+[ -n "$DEBUG" ] && echo "net4526.dexter.swn"
+./update-remote-gauge net4526.dexter.swn 10000 users
+./update-remote net4526.dexter.swn 10001 wlan0
+
+[ -n "$DEBUG" ] && echo "net4526.nodeone.swn"
+./update-remote net4526.nodeone.swn 10000 eth0 wlan0
+./update-remote-radio net4526.nodeone.swn 10002 wlan0
+
+[ -n "$DEBUG" ] && echo "net4511.nodeone.swn"
+./update-remote net4511.nodeone.swn 10000 eth0 wlan0
+./update-remote-gauge net4511.nodeone.swn 10002 users
+

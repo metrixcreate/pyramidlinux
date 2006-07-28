@@ -1,0 +1,36 @@
+#!/bin/sh
+
+DEFAULT="/etc/default/portforwarding"
+
+if [ ! -r $DEFAULT ]; then
+  echo "$DEFAULT not found, exiting."
+  exit
+fi
+
+. $DEFAULT
+
+case "$1" in
+  start)
+    OP="-I"
+  ;;
+  stop)
+    OP="-D"
+  ;;
+  restart)
+    $0 stop; $0 start
+    exit
+  ;;
+  *)
+    echo "Usage: $0 [stop|start|restart]"
+    exit
+  ;;
+esac
+
+echo "$0: $1"
+i=0
+while (( i < ${#PROTO[@]} )); do
+  #echo "${PROTO[$i]} ${DPORT[$i]} to ${TIP[$i]} : ${TPORT[$i]}"
+  iptables -t nat $OP PREROUTING -p ${PROTO[$i]} --dport ${DPORT[$i]} -j DNAT --to-destination ${TIP[$i]}:${TPORT[$i]}
+  (( i++ ))
+done
+
