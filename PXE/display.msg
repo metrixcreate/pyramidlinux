@@ -29,3 +29,5 @@ Choose from one of the following:
 
 5. Boot the Pebble Linux kernel with a shell
 
+6. Install the latest snapshot
+
