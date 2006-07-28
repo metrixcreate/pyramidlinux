@@ -20,7 +20,7 @@ iface ath0 inet static
 	broadcast 192.168.91.255
 	post-down wlanconfig ath0 destroy
 	pre-up wlanconfig ath0 create wlandev wifi0 wlanmode ap # Set by WiFiAdmin
-	pre-up iwconfig ath0 essid "Metrix MADwifi 1" channel 01 rate auto rts off frag off # Set by WiFiAdmin
+	pre-up iwconfig ath0 essid "Chillispot" channel 01 rate auto rts off frag off # Set by WiFiAdmin
 	pre-up ifconfig ath0 up # Set by WiFiAdmin
 	pre-up sleep 3 # Set by WiFiAdmin
 
@@ -35,10 +35,11 @@ iface ath1 inet static
 	pre-up sleep 3 # Set by WiFiAdmin
 
 auto eth0
-iface eth0 inet static
-	address 192.168.1.1
+iface eth0 inet static 
+	address 192.168.200.2
 	netmask 255.255.255.0
-	broadcast 192.168.1.255
+	broadcast 192.168.200.255
+	gateway 192.168.200.1
 
 #auto eth1
 iface eth1 inet dhcp
