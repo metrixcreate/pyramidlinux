@@ -5,9 +5,9 @@ terminal serial
 
 title Metrix
 root (hd0,0)
-kernel /boot/vmlinuz-2.6.16-metrix root=/dev/hda1 console=ttyS0,19200n8
+kernel /boot/vmlinuz root=/dev/hda1 console=ttyS0,19200n8
 
 title Shell
 root (hd0,0)
-kernel /boot/vmlinuz-2.6.16-metrix root=/dev/hda1 console=ttyS0,19200n8 init=/bin/bash
+kernel /boot/vmlinuz root=/dev/hda1 console=ttyS0,19200n8 init=/bin/bash
 
