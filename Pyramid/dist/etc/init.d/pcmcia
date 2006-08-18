@@ -123,9 +123,6 @@ for x in "1" ; do
 		break
 	    fi
 	fi
-	if ! [ -e $PC/i82365.o -a ! -L $PC/i82365.o ]; then
-	    CARDMGR_OPTS="-C config-2.4 $CARDMGR_OPTS"
-	fi
 	if [ -s /var/run/cardmgr.pid ] && \
 	    kill -0 `cat /var/run/cardmgr.pid` 2>/dev/null ; then
 	    echo " cardmgr is already running."
