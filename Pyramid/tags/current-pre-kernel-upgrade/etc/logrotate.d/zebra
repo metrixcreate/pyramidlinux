@@ -1,0 +1,16 @@
+/var/log/zebra/*.log {
+	daily
+	missingok
+	compress
+	rotate 14
+	create 640 root root
+
+	postrotate
+		for i in zebra bgpd ripd ospfd ripngd ospf6d; do
+			if [ -e /var/run/$i.pid ] ; then
+							kill -USR1 `cat /var/run/$i.pid`
+			fi
+
+		done
+	endscript
+}

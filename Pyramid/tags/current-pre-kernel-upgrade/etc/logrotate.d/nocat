@@ -1,0 +1,11 @@
+/var/log/nocat.log {
+	rotate 3
+	size=100k
+	missingok
+	compress
+	copytruncate
+	nodelaycompress
+	notifempty
+}
+
+

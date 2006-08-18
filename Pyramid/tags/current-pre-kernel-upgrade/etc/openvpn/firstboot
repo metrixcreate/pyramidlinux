@@ -1,0 +1,52 @@
+#!/bin/sh
+export PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
+
+remountrw
+
+##
+# Generate the ssh host keys
+#
+if [ ! -r /usr/local/etc/ssh_host_rsa_key ]; then
+  ssh-keygen -t rsa -f /usr/local/etc/ssh_host_rsa_key -N ''
+fi
+
+if [ ! -r /usr/local/etc/ssh_host_dsa_key ]; then
+  ssh-keygen -t dsa -f /usr/local/etc/ssh_host_dsa_key -N ''
+fi
+
+##
+# Build the CA and server keys for OpenVPN
+#
+cd /etc/openvpn/bin
+. vars
+./clean-all
+./auto-build-ca
+./auto-build-key-server server
+./build-dh
+cd /
+
+##
+# Build the INTERFACES list for dhcpd, as well as /etc/network/interfaces. 
+# Ignore loopback and the wire (hopefully bringing up all wireless
+# interfaces and running dhcp on 'em)
+#
+#I=`ip link|grep ^[[:digit:]]|egrep -v 'lo:|wifi'|cut -f 2 -d ' '|tr -d ':'|tr '\n' ' '`
+#echo "INTERFACES=\"$I\"" > /etc/default/dhcp
+#for x in $I; do 
+#  cat /etc/network/chunks/$x >> /etc/network/interfaces; done
+
+##
+# Rebuild the modules cache and /etc/modules.conf
+#
+update-modules
+
+##
+# Only do this once.
+#
+rm -f /etc/rc2.d/S12firstboot
+
+remountro
+
+echo "Rebooting..."
+reboot
+

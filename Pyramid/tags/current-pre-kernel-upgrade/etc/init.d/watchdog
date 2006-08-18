@@ -1,0 +1,18 @@
+#!/bin/sh
+
+case "$1" in
+  start)
+    echo "Starting hardware watchdog."
+    /usr/local/sbin/watchdog
+    ;;
+  stop)
+    echo "Stopping the watchdog would reboot the box immediately."
+    echo "That would likely be BAD."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/$NAME start"
+    exit 1
+    ;;
+esac
+
+exit 0

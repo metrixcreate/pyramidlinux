@@ -1,0 +1,3 @@
+username:password:view_status:view_macs:ban_users:access_ifs:edit_users 
+root:x:true:true:true:true:true
+guest:x:false:false:false:false:false

@@ -1,0 +1,31 @@
+#!/bin/sh
+
+modprobe -r usbserial > /dev/null 2>&1
+
+KNOWNCARDS=(
+ "vendor=0x1199 product=0x0112 # AirCard 580"
+ "vendor=0x1410 product=0x1110 # Novatel Merlin V620"
+ "vendor=0x1416 product=0x1110 # Novatel Merlin V620 (variant)"
+)
+
+NUMCARDS=${#KNOWNCARDS[@]}
+i=0
+while([ $i -lt $NUMCARDS ]); do
+  modprobe -q usbserial ${KNOWNCARDS[$i]}
+  if [ -r /dev/usb/tts/0 ]; then
+    echo "EVDO card detected: ${KNOWNCARDS[$i]}"
+      mount -o remount,rw /
+      if [ ! -z "`echo ${KNOWNCARDS[$i]}|grep V620`" ]; then
+        ln -sf /etc/ppp/peers/EVDO_chat.v620 /etc/ppp/peers/EVDO_chat
+      else
+        ln -sf /etc/ppp/peers/EVDO_chat.generic /etc/ppp/peers/EVDO_chat
+      fi
+      mount -o remount,ro /
+    exit
+  else
+    modprobe -r usbserial > /dev/null 2>&1
+  fi
+  sleep 1  
+  ((i++))
+done
+

@@ -1,0 +1,2 @@
+#!/bin/sh
+echo "Connected as $PPP_LOCAL" > /var/tmp/ppp-status

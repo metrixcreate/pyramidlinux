@@ -1,0 +1,40 @@
+#!/bin/sh
+
+[ ! -r /etc/default/nat ] && exit 
+
+. /etc/default/nat
+
+[ -z "$INTERFACES" ] && exit
+
+modprobe ipt_MASQUERADE
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+case "$1" in
+  start)
+    echo -n "Starting IP Masquerading: "
+    iptables -F -t nat
+
+    for i in $INTERFACES; do
+      iptables -t nat -A POSTROUTING -o $i -j MASQUERADE
+    done
+
+    echo "started."
+    ;;
+  stop)
+    echo -n "Stopping IP Masquerading: "
+    iptables -F -t nat
+    echo "stopped."
+    ;;
+  restart)
+    echo -n "Restarting IP Masquerading: "
+    $0 stop > /dev/null 2>&1
+    $0 start > /dev/null 2>&1
+    echo "restarted. "
+    ;;
+  *)
+    echo "Usage: /etc/init.d/$NAME {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0

@@ -1,0 +1,26 @@
+version 0.0.4
+-Adopted iwconfig output parsing instead of reading /proc files for
+ interaction with the system, as this method guarantees greater	
+ compatibility with drivers other than HOSTAP.Everything apart association
+ list is tested with madwifi drivers too.
+-Site survey results now appear in a nifty sortable table
+-Added a new setting. New users are either allowed to register themselves,
+ or only admin can insert new users.
+-CSS, layout improvements, code enhancements throughout the project
+-Several security fixes, hardened sudo configuration
+-Dynamic sorting on the client side with JavaScript for various tables
+-802.11 "rate" and network traffic graphs per interface added
+
+version 0.0.3 
+-Bugs fixed, improved navigation in community section
+
+
+version 0.0.2
+-Community section added, optional mysql usage, improved appearance, static
+-routing table manipulation added
+
+
+
+version 0.0.1
+-initial version, basic wireless and ethernet configuration implemented
+
