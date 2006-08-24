@@ -13,6 +13,7 @@
 # These should generally not be changed!
 #
 
+
 device "3c589_cs"
   class "network" module "3c589_cs"
 
@@ -2158,6 +2159,14 @@ card "Xircom R2BEM56G-100 CardBus 10/100 Ethernet + 56K Modem"
 card "Xircom RBM56G Modem"
   pci 0x115d, 0x0101
   bind "serial_cb"
+#
+#Metrix added Cards
+#
+card "Sierra Wireless AC850 3G Network Adapter R1"
+manfind 0x0192, 0x0710
+cis "cis/SW_8xx_SER.dat"
+bind "serial_cs"
+
 
 # Include configuration files for add-on drivers
 
