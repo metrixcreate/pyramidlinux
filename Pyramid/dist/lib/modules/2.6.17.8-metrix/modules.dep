@@ -46,6 +46,7 @@
 /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/class/usblp.ko: /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/core/usbcore.ko
 /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/class/cdc-acm.ko: /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/core/usbcore.ko
 /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/storage/usb-storage.ko: /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/core/usbcore.ko /lib/modules/2.6.17.8-metrix/kernel/drivers/scsi/scsi_mod.ko
+/lib/modules/2.6.17.8-metrix/kernel/drivers/usb/serial/airprime.ko: /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/serial/usbserial.ko /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/core/usbcore.ko
 /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/serial/anydata.ko: /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/serial/usbserial.ko /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/core/usbcore.ko
 /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/serial/navman.ko: /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/serial/usbserial.ko /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/core/usbcore.ko
 /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/serial/usbserial.ko: /lib/modules/2.6.17.8-metrix/kernel/drivers/usb/core/usbcore.ko

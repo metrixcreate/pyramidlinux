@@ -406,6 +406,9 @@ alias usb:v03EEp6906d0003dc*dsc*dp*ic*isc*ip* usb_storage
 alias usb:v03EEp6901d00*dc*dsc*dp*ic*isc*ip* usb_storage
 alias usb:v03EEp6901d0100dc*dsc*dp*ic*isc*ip* usb_storage
 alias usb:v03EBp2002d0100dc*dsc*dp*ic*isc*ip* usb_storage
+alias usb:v1199p0112d*dc*dsc*dp*ic*isc*ip* airprime
+alias usb:v1410p1110d*dc*dsc*dp*ic*isc*ip* airprime
+alias usb:v0F3Dp0112d*dc*dsc*dp*ic*isc*ip* airprime
 alias usb:v16D5p6501d*dc*dsc*dp*ic*isc*ip* anydata
 alias usb:v0A99p0001d*dc*dsc*dp*ic*isc*ip* navman
 alias usb:v091Ep0003d*dc*dsc*dp*ic*isc*ip* garmin_gps

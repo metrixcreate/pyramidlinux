@@ -8,17 +8,17 @@ case "$1" in
     rm -f /dev/cellmodem
     echo "" > /var/tmp/ppp-status
     # wait for a known device to show up
-    while ([ ! -r /dev/usb/tts/0 -a ! -r /dev/tts/2 ]); do
+    while ([ ! -r /dev/ttyUSB0 -a ! -r /dev/ttyS2 ]); do  
       sleep 1;
     done
     
     # symlink the device we found
-    if([ -r /dev/usb/tts/0 ]); then
-      ln -s /dev/usb/tts/0 /dev/cellmodem
+    if([ -r /dev/ttyUSB0 ]); then
+      ln -s /dev/ttyUSB0 /dev/cellmodem
       MODEM="EVDO"
     else
-      ln -s /dev/tts/2 /dev/cellmodem
-      setserial /dev/tts/2 baud_base 460800  
+      ln -s /dev/ttyS2 /dev/cellmodem
+      setserial /dev/ttyS2 baud_base 460800  
       MODEM="1xRTT"
     fi
 
