@@ -9,8 +9,9 @@ case "$1" in
     echo "" > /var/tmp/ppp-status
     # wait for a known device to show up
     while ([ ! -r /dev/ttyUSB0 -a ! -r /dev/ttyS2 ]); do  
-      sleep 10;
+      sleep 1;
     done
+    sleep 10
     
     # symlink the device we found
     if([ -r /dev/ttyUSB0 ]); then
