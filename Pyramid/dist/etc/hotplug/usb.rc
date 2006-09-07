@@ -97,7 +97,7 @@ maybe_start_usb ()
 	    if grep -q "[	 ]/proc/bus/usb[	 ]" /etc/fstab ; then
 		mount /proc/bus/usb
 	    else
-		mount -t usbdevfs usbdevfs /proc/bus/usb
+		mount -t usbfs usbfs /proc/bus/usb
 	    fi
 	fi
     fi
