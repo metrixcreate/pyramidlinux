@@ -251,10 +251,10 @@ function get_modem() {
   }
   
   $modem = readlink('/dev/cellmodem');
-  if($modem == "/dev/tts/2") {
+  if($modem == "/dev/ttyS4") {
     $modem = "1xRTT";
   }
-  elseif($modem == "/dev/usb/tts/0") {
+  elseif($modem == "/dev/ttyUSB0") {
     $modem = "EVDO";
   }
   else {
