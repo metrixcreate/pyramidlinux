@@ -251,7 +251,7 @@ function get_modem() {
   }
   
   $modem = readlink('/dev/cellmodem');
-  if($modem == "/dev/ttyS4") {
+  if($modem == "/dev/ttyS2") {
     $modem = "1xRTT";
   }
   elseif($modem == "/dev/ttyUSB0") {
