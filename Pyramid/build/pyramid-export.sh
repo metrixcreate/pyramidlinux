@@ -4,9 +4,10 @@
 #We assume PWD is where you want all of this to take place
 DATE=$(date +%T-%D | sed -e "s/\//-/g")
 FILENAME=pyramid-$DATE.tgz
+PROTO=http
 HOST=pyramid.metrix.net
 REPO="svn/Pyramid/dist/"
-EXPORTCMD="svn export svn://$HOST/$REPO" 
+EXPORTCMD="svn export $PROTO://$HOST/$REPO" 
 WHOAREYOU=$(whoami)
 if [ $WHOAREYOU != root ]; then
 echo "You need to run this as root, in order to properly set permissions in the tarball distro"
