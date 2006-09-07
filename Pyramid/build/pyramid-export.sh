@@ -4,8 +4,8 @@
 #We assume PWD is where you want all of this to take place
 DATE=$(date +%T-%D | sed -e "s/\//-/g")
 FILENAME=pyramid-$DATE.tgz
-HOST=localhost
-REPO="MetrixSvn/Pyramid/dist/"
+HOST=pyramid.metrix.net
+REPO="svn/Pyramid/dist/"
 EXPORTCMD="svn export svn://$HOST/$REPO" 
 WHOAREYOU=$(whoami)
 if [ $WHOAREYOU != root ]; then
