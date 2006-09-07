@@ -1,2 +1,0 @@
-#!/bin/bash
-/usr/bin/nc 127.0.0.1 2004 | /usr/bin/dot -Tsvg 2>&->/var/tmp/olsr/makesvg.svg

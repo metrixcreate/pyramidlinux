@@ -1,7 +1,0 @@
-#!/bin/sh
-rw
-find / -name *~ -exec rm -f {} \;
-rm -f /etc/ssh/ssh_host_dsa_key /etc/ssh/ssh_host_dsa_key.pub /etc/ssh/ssh_host_rsa_key /etc/ssh/ssh_host_rsa_key.pub
-cp -f /etc/network/interfaces.dist /etc/network/interfaces
-ro
-echo "Ready to distribute, boss."

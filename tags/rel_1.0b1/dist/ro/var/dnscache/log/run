@@ -1,2 +1,0 @@
-#!/bin/sh
-exec setuidgid dnslog multilog '-*' '+* stats*' n3 t ./main

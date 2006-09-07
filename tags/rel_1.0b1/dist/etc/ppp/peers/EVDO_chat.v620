@@ -1,7 +1,0 @@
-'' 'AT'
-'OK' 'ATQ0V1E0'
-'OK' 'ATZ'
-'OK' 'AT&F'
-TIMEOUT 120
-'OK' 'ATDT#777'
-'CONNECT' 'CLIENT'

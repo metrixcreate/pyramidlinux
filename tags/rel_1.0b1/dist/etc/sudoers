@@ -1,5 +1,0 @@
-#
-# sudoers
-#
-root		ALL=(ALL) NOPASSWD: ALL
-www		ALL=(ALL) NOPASSWD: ALL

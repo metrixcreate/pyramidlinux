@@ -1,8 +1,0 @@
-# Defaults for pcmcia (sourced by /etc/init.d/pcmcia)
-PCMCIA=yes
-#PCIC=i82092
-#PCIC=i82365
-PCIC=yenta_socket
-PCIC_OPTS=
-CORE_OPTS=
-CARDMGR_OPTS=-f

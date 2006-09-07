@@ -1,4 +1,0 @@
-# This file contains a list of paths that modprobe should scan,
-# beside the once that are compiled into the modutils tools
-# themselves.
-
