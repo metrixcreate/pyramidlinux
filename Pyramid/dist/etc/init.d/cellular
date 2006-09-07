@@ -24,7 +24,7 @@ case "$1" in
     fi
 
     while :; do
-      pppd call $MODEM
+      pppd call $MODEM > /dev/null 2>&1
       echo "Reconnecting..." > /var/tmp/ppp-status
       sleep 2
     done
