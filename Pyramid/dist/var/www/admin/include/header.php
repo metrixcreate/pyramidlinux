@@ -80,6 +80,7 @@ else
 			<li><a href="./system.php" class="menulink">System Services</a></li>
 			<li><a href="./iwsettings.php" class="menulink">Wireless Settings</a></li>
 			<li><a href="./ifsettings.php" class="menulink">Network Interfaces</a></li>
+			<li><a href="./captiveportals.php" class="menulink">Captive Portals</a></li>
 			<li><a href="./mesh.php" class="menulink">Mesh Networking</a></li>
                         <li><a href="./firewall.php" class="menulink">Port Forwarding</a></li> 
 			';
