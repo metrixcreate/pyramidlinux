@@ -14,7 +14,7 @@
 
 IPT=/sbin/iptables
 WD_DIR=/bin
-OPTIONS=""
+OPTIONS="-d 0 1>/dev/null 2>/dev/null"
 
 case "$1" in
   start)
