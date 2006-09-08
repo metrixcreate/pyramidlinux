@@ -251,10 +251,10 @@ function get_modem() {
   }
   
   $modem = readlink('/dev/cellmodem');
-  if($modem == "/dev/ttyS2") {
+  if($modem == "/dev/tts/2") {
     $modem = "1xRTT";
   }
-  elseif($modem == "/dev/ttyUSB0") {
+  elseif($modem == "/dev/usb/tts/0") {
     $modem = "EVDO";
   }
   else {
@@ -323,9 +323,9 @@ function set_rc($file,$priority) {
   }
   else {
     privcmd("ln -sf /etc/init.d/$file /etc/rc2.d/S$priority$file",true);
-    privcmd("/etc/init.d/$file start",false);
+    return privcmd("/etc/init.d/$file start",false);
   }
-  return true;
+  //return true;
 }
 
 /************************************************

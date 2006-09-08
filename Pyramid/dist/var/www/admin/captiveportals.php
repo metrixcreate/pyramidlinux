@@ -46,7 +46,16 @@ switch ($_GET["action"]){
 		if(isset($_GET["wifidog"])) {
 		  if(!get_rc("S99wifidog")) {
 		    echo "<li>Enabling WifiDog daemon.</li>";
-		    set_rc("wifidog",99);
+		    $wifidog_status = set_rc("wifidog",99);
+		    if (ereg('OK', $wifidog_status)) {
+			echo "<li>WifiDog started successfully</li>";
+			} 
+		    else {
+			echo "<li>Error enabling WifiDog, please check /etc/wifidog.conf</li>";
+			//sleep togive wifidog "start" time to finish before stopping
+			sleep(7);
+			set_rc("wifidog",0);
+			}
 		  }
 		}
 		else {
