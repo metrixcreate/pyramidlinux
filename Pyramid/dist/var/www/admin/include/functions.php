@@ -1356,4 +1356,44 @@ function set_olsr_plugin_settings($plugin, $name, $setting) {
 }
 
 
+/************************************
+* get_wifidog_ints()
+* Return wifidog interface configuration if any
+*************************************/
+function get_wifidog_ints() {
+   $wifidog_ext_int="";
+   $wifidog_gw_int="";
+   $wifidog_ints=array();  
+	
+  $filename = '/etc/wifidog.conf';
+
+  if(!is_readable($filename))
+    return false;
+    
+  $fp = fopen($filename,"r");
+  if(!$fp)
+    return false;
+
+  $file_contents=fread($fp,filesize($filename));
+  fclose($fp);
+
+  $whole_lines=explode("\n",$file_contents);
+  foreach ($whole_lines as $whole_line) {
+  	if(ereg("^ExternalInterface (.*)",$whole_line,$regs)) {
+  		$wifidog_ext_int=$regs[1];
+    }
+  }
+  foreach ($whole_lines as $whole_line) {
+  	if(ereg("^GatewayInterface (.*)",$whole_line,$regs)) {
+  		$wifidog_gw_int=$regs[1];
+    }
+  }
+  $wifidog_ints[0]=$wifidog_ext_int;
+  $wifidog_ints[1]=$wifidog_gw_int;
+  
+  return $wifidog_ints;
+}
+
+
+
 ?>

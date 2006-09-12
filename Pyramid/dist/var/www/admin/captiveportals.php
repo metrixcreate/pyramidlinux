@@ -26,14 +26,51 @@ if(!isset($_GET['action']))
 
 switch ($_GET["action"]){
 	case "show_captiveportal_settings":
+		$ethernet_statuses = get_ethernet_status();
+		$wifidog_ints=array();
+		$wifidog_ints=get_wifidog_ints();
+		
+		
+		
 ?>		<form onSubmit="submitonce(this)" action="<?echo $_SERVER['PHP_SELF']?>" method="GET">
 		<p><fieldset title="WifiDog Settings">
 		<legend>WifiDog Settings</legend>
 		<table>
-		<tr><td>WifiDog Captive Portal</td><td><input type="checkbox" name="wifidog" value="on" <?if(get_rc("S99wifidog")) echo 'checked';?>></td></tr>
+		<tr><td>Enable WifiDog Captive Portal</td><td><input type="checkbox" name="wifidog" value="on" <?if(get_rc("S99wifidog")) echo 'checked';?>></td></tr>
+		<?$wifidog_ints=get_wifidog_ints();?>
+		<tr><td>Internet Interface: 
+		<? 
+		$i = 0;
+		foreach ( $ethernet_statuses as $device => $ethernet_status ) {
+		  echo "<input type='checkbox' name='wifidog_ext_if$i' value='$device'";
+		  if($device == $wifidog_ints[0]) echo 'checked';
+		  echo "> $device &nbsp;&nbsp; ";
+		  $i++;
+		}
+		?>
+		</td></tr>
+		<tr><td>Gateway Interface: 
+		<?
+		$i = 0;
+		foreach ( $ethernet_statuses as $device => $ethernet_status ) {
+		  echo "<input type='checkbox' name='wifidog_gw_if$i' value='$device'";
+		  if($device == $wifidog_ints[1]) echo 'checked';
+		  echo "> $device &nbsp;&nbsp; ";
+		  $i++;
+		}
+		?>
+		</td></tr>
+		
 		</table>
 		</fieldset></p>
 
+		
+		
+		
+		
+		
+		
+		
 	
 		<input type ="hidden" name="action" value = "save_captiveportal_settings">
 		<input type="submit" value="Commit Changes">
@@ -42,6 +79,47 @@ switch ($_GET["action"]){
 	case "save_captiveportal_settings":
 		echo "<h5>Saving captive portal settings...</h5><ul>";
 
+		
+		$ifs = "";
+		foreach ( array_keys($_GET) as $param) {
+		   echo substr($param,0,14);
+		    if(substr($param,0,14) == "wifidog_ext_if") {
+		    $ifs = "$_GET[$param]";
+		    echo "ifs";
+		    echo $ifs;
+		  }
+		}
+		
+		if($ifs) {
+		  echo "<li>Updating Wifidog Internet Interface</li>";
+	          $ifline = "#ExternalInterface $ifs";
+		  file_replace("/etc/wifidog.conf","#ExternalInterface .*", "$ifline\n");
+	        
+	         $ifline = "ExternalInterface $ifs";
+		  file_replace("/etc/wifidog.conf","ExternalInterface .*", "$ifline\n");
+	        }  
+		
+		
+		$ifs = "";
+		foreach ( array_keys($_GET) as $param) {
+		  if(substr($param, 0, 13) == "wifidog_gw_if") {
+		    $ifs = "$_GET[$param]";
+		    echo "ifs";
+		    echo $ifs;
+		  }
+		}
+		
+		if($ifs) {
+		  echo "<li>Updating Wifidog Gateway Interface</li>";
+	          $ifline = "#GatewayInterface $ifs";
+		  file_replace("/etc/wifidog.conf","#GatewayInterface .*", "$ifline\n");
+	        
+	         $ifline = "GatewayInterface $ifs";
+		  file_replace("/etc/wifidog.conf","GatewayInterface .*", "$ifline\n");
+	        }  
+		
+		
+		
 		
 		if(isset($_GET["wifidog"])) {
 		  if(!get_rc("S99wifidog")) {
