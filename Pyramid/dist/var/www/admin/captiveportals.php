@@ -44,7 +44,7 @@ switch ($_GET["action"]){
 		<? 
 		$i = 0;
 		foreach ( $ethernet_statuses as $device => $ethernet_status ) {
-		  echo "<input type='checkbox' name='wifidog_ext_if$i' value='$device'";
+		  echo "<input type='radio' name='wifidog_ext_if' value='$device'";
 		  if($device == $wifidog_ints[0]) echo 'checked';
 		  echo "> $device &nbsp;&nbsp; ";
 		  $i++;
@@ -55,7 +55,7 @@ switch ($_GET["action"]){
 		<?
 		$i = 0;
 		foreach ( $ethernet_statuses as $device => $ethernet_status ) {
-		  echo "<input type='checkbox' name='wifidog_gw_if$i' value='$device'";
+		  echo "<input type='radio' name='wifidog_gw_if' value='$device'";
 		  if($device == $wifidog_ints[1]) echo 'checked';
 		  echo "> $device &nbsp;&nbsp; ";
 		  $i++;
@@ -63,8 +63,8 @@ switch ($_GET["action"]){
 		?>
 		</td></tr>
 		<tr><td><?$wifidog_auth_servers=get_wifidog_auth_servers()?></td></tr>
-		<tr><td>Authserver <input type="text" name="authserverhostname" value="<? if(array_key_exists('Hostname', $wifidog_auth_servers)) echo $wifidog_auth_servers['Hostname'];?>"><td></tr>
-		<tr><td>Server Path: <input type="text" name="authserverpath" value="<? if(array_key_exists('Path', $wifidog_auth_servers)) echo $wifidog_auth_servers['Path'];?>"></td></tr>
+		<tr><td>Authserver <input type="textarea" name="authserverhostname" value="<? if(array_key_exists('Hostname', $wifidog_auth_servers)) echo $wifidog_auth_servers['Hostname'];?>"><td></tr>
+		<tr><td>Server Path: <input type="textarea" name="authserverpath" value="<? if(array_key_exists('Path', $wifidog_auth_servers)) echo $wifidog_auth_servers['Path'];?>"></td></tr>
 		<tr><td>Authserver has SSL enabled: <input type="checkbox" name='authserverssl' value="on" <?if($wifidog_auth_servers['SSLAvailable'] == 'yes') echo 'checked'; ?> ></td></tr>
 		</table>
 		
@@ -91,11 +91,10 @@ switch ($_GET["action"]){
 		
 		$ifs = "";
 		foreach ( array_keys($_GET) as $param) {
-		   echo substr($param,0,14);
+		   
 		    if(substr($param,0,14) == "wifidog_ext_if") {
 		    $ifs = "$_GET[$param]";
-		    echo "ifs";
-		    echo $ifs;
+		   
 		  }
 		}
 		
@@ -113,8 +112,7 @@ switch ($_GET["action"]){
 		foreach ( array_keys($_GET) as $param) {
 		  if(substr($param, 0, 13) == "wifidog_gw_if") {
 		    $ifs = "$_GET[$param]";
-		    echo "ifs";
-		    echo $ifs;
+		   
 		  }
 		}
 		
