@@ -1356,6 +1356,51 @@ function set_olsr_plugin_settings($plugin, $name, $setting) {
 }
 
 
+/* ***********************************
+*get_wifidog_auth_servers()
+* Return wifidog auth server config if any
+**************************************/
+function get_wifidog_auth_servers(){
+	 $filename='/etc/wifidog.conf';
+	 $comment='#';
+	 if(!is_readable($filename)) return false;
+	 $fp = fopen($filename,"r");
+	 if(!$fp)
+    	return false;
+     $inside_authserver="";
+     //$auth_server_params="";
+     $i=0;
+     $list='';
+     while (!feof($fp)){
+     	
+     	$line = trim(fgets($fp));
+     	if (strstr($line, "{") && ereg("^AuthServer", $line)) {
+     		$inside_authserver=true;
+     		
+     	}
+     	elseif ($inside_authserver == true && !ereg("}", $line)) {
+     		
+     		
+            $arr=array();
+     		$arr = explode(' ', $line);
+     		$auth_server_params[$arr[0]]= $arr[1];
+     		
+     	}
+     	else {
+     		$inside_authserver=false;	
+     		
+     	}
+     
+     }
+ 
+     return $auth_server_params;
+  
+     
+}
+        
+
+
+
 /************************************
 * get_wifidog_ints()
 * Return wifidog interface configuration if any
@@ -1394,6 +1439,54 @@ function get_wifidog_ints() {
   return $wifidog_ints;
 }
 
+	
+	//Note that this dumps an array out in a form suitable to be
+	//used with eval() to recreate the array!
+	
+	function arrayDump(&$array, $col=0){
+		if (is_array($array)){
+			echo "\n";
+			$i = 0;
+			$count = count($array);
+			while($i < $count && list($key, $val) = each($array)){
+				echo $key, ' ==> ';
+				arrayDump($val, $col+1);
+				$i++;
+				if ($i < $count){
+					echo ',';
+				}
+				echo "\n";
+			}
+			echo "\n";
+		}
+		else{
+			echo $array;
+		}
+	}
+	
+	for ($i = 0; $i < 5; $i++){
+		for ($j = $i; $j < 4; $j++){
+			for ($k = $j; $k < 3; $k++){
+				$data[$i][$j][$k] = $i * $j + $k;
+			}
+		}
+	}
+	
+	
 
+
+
+
+function explodeAssoc($glue,$str)
+{
+   $arr=explode($glue,$str);
+
+   $size=count($arr);
+
+   for ($i=0; $i < $size/2; $i++)
+       $out[$arr[$i]]=$arr[$i+($size/2)];
+
+   return($out);
+};
 
 ?>

@@ -24,6 +24,8 @@ if ($_SESSION["access_ifs"]!="true"){
 if(!isset($_GET['action']))
 	$_GET['action'] = "show_captiveportal_settings";
 
+	
+	
 switch ($_GET["action"]){
 	case "show_captiveportal_settings":
 		$ethernet_statuses = get_ethernet_status();
@@ -60,8 +62,15 @@ switch ($_GET["action"]){
 		}
 		?>
 		</td></tr>
-		
+		<tr><td><?$wifidog_auth_servers=get_wifidog_auth_servers()?></td></tr>
+		<tr><td>Authserver <input type="text" name="authserverhostname" value="<? if(array_key_exists('Hostname', $wifidog_auth_servers)) echo $wifidog_auth_servers['Hostname'];?>"><td></tr>
+		<tr><td>Server Path: <input type="text" name="authserverpath" value="<? if(array_key_exists('Path', $wifidog_auth_servers)) echo $wifidog_auth_servers['Path'];?>"></td></tr>
+		<tr><td>Authserver has SSL enabled: <input type="checkbox" name='authserverssl' value="on" <?if($wifidog_auth_servers['SSLAvailable'] == 'yes') echo 'checked'; ?> ></td></tr>
 		</table>
+		
+    	<?// print_r($wifidog_auth_servers);?>
+		
+		
 		</fieldset></p>
 
 		
