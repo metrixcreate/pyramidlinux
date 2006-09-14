@@ -65,7 +65,7 @@ switch ($_GET["action"]){
 		<tr><td><?$wifidog_auth_servers=get_wifidog_auth_servers()?></td></tr>
 		<tr><td>Authserver <input type="textarea" name="authserverhostname" value="<? if(array_key_exists('Hostname', $wifidog_auth_servers)) echo $wifidog_auth_servers['Hostname'];?>"><td></tr>
 		<tr><td>Server Path: <input type="textarea" name="authserverpath" value="<? if(array_key_exists('Path', $wifidog_auth_servers)) echo $wifidog_auth_servers['Path'];?>"></td></tr>
-		<tr><td>Authserver has SSL enabled: <input type="checkbox" name='authserverssl' value="on" <?if($wifidog_auth_servers['SSLAvailable'] == 'yes') echo 'checked'; ?> ></td></tr>
+		<tr><td>Authserver has SSL enabled: <input type="radio" name='authserverssl' value="on" <?if($wifidog_auth_servers['SSLAvailable'] == 'yes') echo 'checked'; ?> ><input type="radio" name='authserverssl' value="off" <?if($wifidog_auth_servers['SSLAvailable'] == 'no') echo 'checked'; ?> ></td></tr>
 		</table>
 		
     	<?// print_r($wifidog_auth_servers);?>
@@ -126,9 +126,23 @@ switch ($_GET["action"]){
 	        }  
 		
 		if(isset($_GET["authserverhostname"])) {
-			$authserverline = "    Hostname $_GET[authserverhostname]" ;
+		    $wifidogconfline = "    Hostname $_GET[authserverhostname]" ;
 		    file_replace("/etc/wifidog.conf","    Hostname .*", "$authserverline \n");
+		    $wifidogconfline = "";
 		}
+		
+		if(isset($_GET["authserverpath"])) {
+			$wifidogconfline = "    Path $_GET[authserverpath]" ;
+		    file_replace("/etc/wifidog.conf","    Path .*", "$wifidogconfline \n");
+			$wifidogconfline;
+		}
+		
+		if(isset($_GET["authserverssl"])) {
+			$wifidogconfline = "    SSLAvailable $_GET[authserverssl]" ;
+		    file_replace("/etc/wifidog.conf","    SSLAvailable .*", "$wifidogconfline \n");
+			$wifidogconfline;
+		}
+		
 		
 		
 		if(isset($_GET["wifidog"])) {
