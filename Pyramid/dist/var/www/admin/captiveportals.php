@@ -126,9 +126,8 @@ switch ($_GET["action"]){
 	        }  
 		
 		if(isset($_GET["authserverhostname"])) {
-			$authserverline = "AuthServer $_GET[authserverhostname]" ;
-			file_replace("/etc/wifidog.conf", "#AuthServer .*", $authserverline);
-		    file_replace("/etc/wifidog.conf","AuthServer .*", "$authserverline \n");
+			$authserverline = "    Hostname $_GET[authserverhostname]" ;
+		    file_replace("/etc/wifidog.conf","    Hostname .*", "$authserverline \n");
 		}
 		
 		
