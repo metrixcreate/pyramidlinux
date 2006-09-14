@@ -100,7 +100,7 @@ switch ($_GET["action"]){
 		
 		if($ifs) {
 		  echo "<li>Updating Wifidog Internet Interface</li>";
-	          $ifline = "#ExternalInterface $ifs";
+	          $ifline = "ExternalInterface $ifs";
 		  file_replace("/etc/wifidog.conf","#ExternalInterface .*", "$ifline\n");
 	        
 	         $ifline = "ExternalInterface $ifs";
@@ -118,14 +118,18 @@ switch ($_GET["action"]){
 		
 		if($ifs) {
 		  echo "<li>Updating Wifidog Gateway Interface</li>";
-	          $ifline = "#GatewayInterface $ifs";
+	          $ifline = "GatewayInterface $ifs";
 		  file_replace("/etc/wifidog.conf","#GatewayInterface .*", "$ifline\n");
 	        
 	         $ifline = "GatewayInterface $ifs";
 		  file_replace("/etc/wifidog.conf","GatewayInterface .*", "$ifline\n");
 	        }  
 		
-		
+		if(isset($_GET["authserverhostname"])) {
+			$authserverline = "AuthServer $_GET[authserverhostname]" ;
+			file_replace("/etc/wifidog.conf", "#AuthServer .*", $authserverline);
+		    file_replace("/etc/wifidog.conf","AuthServer .*", "$authserverline \n");
+		}
 		
 		
 		if(isset($_GET["wifidog"])) {
