@@ -65,7 +65,7 @@ switch ($_GET["action"]){
 		<tr><td><?$wifidog_auth_servers=get_wifidog_auth_servers()?></td></tr>
 		<tr><td>Authserver <input type="textarea" name="authserverhostname" value="<? if(array_key_exists('Hostname', $wifidog_auth_servers)) echo $wifidog_auth_servers['Hostname'];?>"><td></tr>
 		<tr><td>Server Path: <input type="textarea" name="authserverpath" value="<? if(array_key_exists('Path', $wifidog_auth_servers)) echo $wifidog_auth_servers['Path'];?>"></td></tr>
-		<tr><td>Authserver has SSL enabled: yes<input type="radio" name='authserverssl' value="on" <?if($wifidog_auth_servers['SSLAvailable'] == 'yes') echo 'checked'; ?> >  no<input type="radio" name='authserverssl' value="off" <?if($wifidog_auth_servers['SSLAvailable'] == 'no') echo 'checked'; ?> ></td></tr>
+		<tr><td>Authserver has SSL enabled: yes<input type="radio" name='authserverssl' value="yes" <?if($wifidog_auth_servers['SSLAvailable'] == 'yes') echo 'checked'; ?> >  no<input type="radio" name='authserverssl' value="no" <?if($wifidog_auth_servers['SSLAvailable'] == 'no') echo 'checked'; ?> ></td></tr>
 		</table>
 		
     	<?// print_r($wifidog_auth_servers);?>
