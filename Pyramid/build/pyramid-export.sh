@@ -33,7 +33,7 @@ chown -R 0:0 usr
 chown -R 0:0 var
 #next round of permission fixing
 chmod 0440 etc/sudoers
-chmod -R +x /etc/init.d/
+chmod -R +x etc/init.d/
 
 
 tar -cvpf ../$FILENAME *
