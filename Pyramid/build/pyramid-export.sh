@@ -31,9 +31,12 @@ chown -R 0:0 sbin
 chown -R 0:0 tmp
 chown -R 0:0 usr
 chown -R 0:0 var
+chown -R 500:500 ro/kismet
 #next round of permission fixing
 chmod 0440 etc/sudoers
 chmod -R +x etc/init.d/
+chmod 777 tmp
+
 
 
 tar -cvpf ../$FILENAME *
