@@ -513,6 +513,10 @@ function error_echo($string)
 
 //this works for hostap only
 function get_connected_users_num( $device ){
+
+if(ereg("^wlan.*",$device))
+   {
+
 	global $hostap_device_path;
 	$dh  = opendir($hostap_device_path);
 	while (false !== ($filename = readdir($dh))) {
@@ -530,6 +534,23 @@ function get_connected_users_num( $device ){
 			$users_num++;
 	}
 	return $users_num;
+   }
+
+if(ereg("^ath.*",$device))
+   {
+	global $madwifi_device_path;
+        $filename = $madwifi_device_path.$device."/associated_sta";
+        $file_contents=file_get_contents($filename);
+  	$whole_lines=explode("\n",$file_contents);
+        $users_num = 0;	
+  	foreach ($whole_lines as $whole_line) {
+    	if(ereg("macaddr",$whole_line)) {
+      	$users_num++;
+    					}
+  	}
+    
+    return $users_num;
+    }
 }
 
 function get_value($input_string, $attribute){
