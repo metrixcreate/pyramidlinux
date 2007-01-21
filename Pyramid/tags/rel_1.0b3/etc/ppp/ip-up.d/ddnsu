@@ -1,0 +1,2 @@
+#!/bin/sh                                                                       
+/sbin/ddnsu `cat /etc/ddnsu.conf`

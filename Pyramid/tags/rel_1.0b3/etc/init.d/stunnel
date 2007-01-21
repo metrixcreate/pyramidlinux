@@ -1,0 +1,36 @@
+#!/bin/sh
+
+set -e
+
+DAEMON=/usr/local/sbin/stunnel
+OPTIONS=""
+
+NAME=`basename $DAEMON`
+#PIDFILE="--pidfile /var/run/$NAME.pid"
+
+test -x $DAEMON || exit 0
+
+case "$1" in
+  start)
+    echo -n "Starting $NAME: "
+    start-stop-daemon --start --quiet $PIDFILE --exec $DAEMON -- $OPTIONS
+    echo "$NAME. "
+    ;;
+  stop)
+    echo -n "Stopping $NAME: "
+    start-stop-daemon --stop --quiet $PIDFILE --exec $DAEMON
+    echo "$NAME. "
+    ;;
+  restart)
+    echo -n "Restarting $NAME: "
+    $0 stop > /dev/null 2>&1
+    $0 start > /dev/null 2>&1
+    echo "$NAME. "
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0

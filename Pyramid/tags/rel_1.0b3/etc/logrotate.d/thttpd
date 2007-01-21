@@ -1,0 +1,19 @@
+/var/log/thttpd.log {
+    rotate 14
+    daily
+    compress
+    missingok
+    prerotate
+	if pidof thttpd 2>&1 > /dev/null; then
+	    touch /tmp/start_thttpd
+	    /etc/init.d/thttpd stop 2>&1 > /dev/null
+	fi
+    endscript
+    postrotate
+	if [ -f /tmp/start_thttpd ]; then
+    	    /etc/init.d/thttpd start 2>&1 > /dev/null
+	    rm -f /tmp/start_thttpd
+	fi
+    endscript
+}
+

@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "Building initial RRD databases..."
+/bin/php /var/www/admin/create-update-rrds.php > /dev/null 2>&1
+

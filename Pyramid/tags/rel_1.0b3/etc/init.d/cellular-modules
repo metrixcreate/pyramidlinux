@@ -1,0 +1,5 @@
+#!/bin/sh
+
+modprobe ohci-hcd
+modprobe usbserial  
+modprobe airprime

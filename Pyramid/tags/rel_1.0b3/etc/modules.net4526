@@ -1,0 +1,24 @@
+# /etc/modules: kernel modules to load at boot time.
+#
+# This file should contain the names of kernel modules that are
+# to be loaded at boot time, one per line.  Comments begin with
+# a "#", and everything on the line after them are ignored.
+hostap_pci
+#eepro100
+ath_pci
+natsemi
+ipt_mark
+ipt_state
+ipt_mac
+ip_nat_ftp
+iptable_filter
+iptable_mangle
+ipt_LOG
+ipt_TOS
+ipt_REJECT
+ipt_MARK
+ipt_MASQUERADE
+ipt_REDIRECT
+iptable_nat
+ip_conntrack
+ip_tables
