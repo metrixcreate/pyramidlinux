@@ -533,13 +533,15 @@ if(ereg("^wlan.*",$device))
 		if (strstr( $file , ':') != false)
 			$users_num++;
 	}
+	echo "Prism2";
+	echo $users_num;
 	return $users_num;
    }
 
 if(ereg("^ath.*",$device))
    {
 	global $madwifi_device_path;
-        $filename = $madwifi_device_path.$device."/associated_sta";
+        $filename = "/proc/net/madwifi/".$madwifi_device_path.$device."/associated_sta";
         $file_contents=file_get_contents($filename);
   	$whole_lines=explode("\n",$file_contents);
         $users_num = 0;	
@@ -548,6 +550,8 @@ if(ereg("^ath.*",$device))
       	$users_num++;
     					}
   	}
+	echo "Atheros";
+	echo $users_num;
     
     return $users_num;
     }
