@@ -38,6 +38,11 @@ ip_nat_ftp
 
 ppp_generic
 
+#USB modules
+ohci_hcd
+usb_storage
+sd_mod
+
 # SierraWireless AirCard 580
 #usbserial vendor=0x1199 product=0x0112
 
