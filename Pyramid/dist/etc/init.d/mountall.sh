@@ -13,6 +13,7 @@
 [ "$VERBOSE" != no ] && echo "Mounting local filesystems..."
 mount -avt nonfs,nosmbfs,noncpfs,noproc
 mount -at proc
+mount -t usbfs usbfs /proc/bus/usb
 #create the log device
 touch /ro/dev/log
 #copy everything in ro (flash) to rw (ramdisk)
