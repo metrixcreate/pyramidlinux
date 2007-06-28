@@ -13,7 +13,12 @@
 [ "$VERBOSE" != no ] && echo "Mounting local filesystems..."
 mount -avt nonfs,nosmbfs,noncpfs,noproc
 mount -at proc
+#create the log device
+touch /ro/dev/log
+#copy everything in ro (flash) to rw (ramdisk)
 cp -a /ro/* /rw/
+#link the log device
+ln -s /rw/dev/log /dev/log
 #cp /proc/mounts /etc/mtab
 
 kill -USR1 1
