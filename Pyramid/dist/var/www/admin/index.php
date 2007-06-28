@@ -63,7 +63,13 @@ if($_SESSION["username"] == "guest")
 	<?
 }
 else {
-  echo "<p class=\"index\"><img src=\"/images/pyramid.png\" width=\"100\"><br /><br /><font color='#900040'>".chostname()."</font> online</p><p class=\"index\">Uptime: ".uptime()."</p><br><br>";
+  echo "<p class=\"index\"><img src=\"/images/pyramid.png\" width=\"100\"><br /><br /><font color='#900040'>".chostname().
+	"</font> online</p><p class=\"index\">Uptime: ".uptime();
+  if($vf = @fopen("/etc/pyramid_version", "r")) {
+  	$pyramid_version = fgets($vf, 4096);
+  	echo "<br>Pyramid Version: $pyramid_version";
+  }
+  echo "</p><br><br>";
 }
 
 include("./include/footer.php");

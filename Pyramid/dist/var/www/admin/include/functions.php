@@ -594,7 +594,7 @@ function parse_iwconfig($wif)
 	$data['type'] = getnext($output,"IEEE");
 	$data['nick'] = getnext($output,"Nickname");
 //	$data['essid'] = getnext($output,"ESSID");
-	ereg('ESSID:"(.*)"',$output,$regs);
+	ereg('ESSID:"(.*)" .*',$output,$regs);
 	$data['essid'] = $regs[1];
 	$data['mode'] =  getnext($output,"Mode");
 //	$data['channel'] =  freq2channel(str_replace("GHz","",getnext($output,"Frequency")));
