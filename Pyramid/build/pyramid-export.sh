@@ -3,26 +3,40 @@
 #
 #We assume PWD is where you want all of this to take place
 FILEHEAD=pyramid
-PROTO=http
-HOST=pyramid.metrix.net
+PROTO="https"
+HOST="secure.metrix.net"
 REPO="svn/Pyramid/dist/"
 EXPORTCMD="svn export $PROTO://$HOST/$REPO | tee export.log" 
 WHOAREYOU=$(whoami)
 FAKEROOT=/usr/bin/fakeroot
+VERSION=unknown
 
 if [ $WHOAREYOU != root ] && [ ! -x $FAKEROOT ] ; then
-echo "You need to run this as root or have fakeroot installed in order to properly set permissions in the tarball distro"
-exit
+	echo "You need to run this as root or have fakeroot installed in order to properly set permissions in the tarball distro"
+	exit
 fi
+
+if [ ! -d 'work' ] ; then 
+	mkdir work
+fi
+cd work
+eval $EXPORTCMD
+if [ $? -ne 0 ] ; then
+	echo "SVN Failed... exiting"
+	cd ..
+	exit
+fi
+
+if [ -e export.log ] ; then
+  VERSION=`sed -n 's/^Exported revision \([0-9]*\)./svn-\1/p' export.log` 
+fi
+
+for moduledir in `ls -1 dist/lib/modules`; do
+	depmod -b dist $moduledir
+done
 
 cat > pyramid-work.sh << EOF
 #!/bin/bash
-mkdir work
-cd work
-$EXPORTCMD
-if [ -e export.log ] ; then
-  sed -n 's/^Exported revision \([0-9]*\)./svn-\1/p' export.log > dist/etc/pyramid_version
-fi
 cd dist
 #Insert stuff to fix baseline permissions here
 chown -R 0:0 etc
@@ -44,10 +58,9 @@ chmod 0440 etc/sudoers
 chmod -R +x etc/init.d/
 chmod 777 tmp
 
-if [ -e ../export.log ] ; then
-  sed -n 's/^Exported revision \([0-9]*\)./Metrix Pyramid\/\\\\s  \\\\n \\\\l (svn-\1)\n/p' ../export.log > ro/etc/issue
-  sed -n 's/^Exported revision \([0-9]*\)./Metrix Pyramid\/%s %h (svn-\1)/p' ../export.log > ro/etc/issue.net
-fi
+echo $VERSION > etc/pyramid_version
+echo 'Metrix Pyramid/\s  \n \l ($VERSION)' > ro/etc/issue ; echo >> ro/etc/issue
+echo 'Metrix Pyramid/%s %h ($VERSION)' > ro/etc/issue.net
 
 tar -cvpf ../build.tar *
 cd ..
@@ -60,5 +73,5 @@ else
 	./pyramid-work.sh
 fi
 
-mv work/build.tar $FILEHEAD-`cat work/dist/etc/pyramid_version`.tar
+mv build.tar $FILEHEAD-$VERSION.tar
 rm pyramid-work.sh
