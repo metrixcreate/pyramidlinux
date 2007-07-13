@@ -13,10 +13,13 @@ ath_pci autocreate=none
 # 
 natsemi
 #
-# elan 520 watchdog timer
+# elan 520 watchdog timer ( soekris 45XX series or Metrix Mark I)
 # (run "/etc/init.d/watchdog start" to initialize it)
 #
 #sc520_wdt
+#
+# geode sc1100 watchdog timer (soekris 48xx series or Metrix Mark II)
+#scx200_wdt margin=30
 #
 # iptables related modules
 #
