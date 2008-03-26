@@ -127,20 +127,26 @@ switch ($_GET["action"]){
 		
 		if(isset($_GET["authserverhostname"])) {
 		    $wifidogconfline = "    Hostname $_GET[authserverhostname]" ;
-		    file_replace("/etc/wifidog.conf","    Hostname .*", "$wifidogconfline \n");
+		    $newwifidogconfline = trim($wifidogconfline); 
+		    file_replace("/etc/wifidog.conf","    Hostname .*", "$newwifidogconfline \n");
 		    $wifidogconfline = "";
+		    $newwifidogconfline = "";
 		}
 		
 		if(isset($_GET["authserverpath"])) {
 			$wifidogconfline = "    Path $_GET[authserverpath]" ;
-		    file_replace("/etc/wifidog.conf","    Path .*", "$wifidogconfline \n");
+		        $newwifidogconfline = trim($wifidogconfline);
+		        file_replace("/etc/wifidog.conf","    Path .*", "$newwifidogconfline \n");
 			$wifidogconfline;
+		        $newwifidogconfline = "";
 		}
 		
 		if(isset($_GET["authserverssl"])) {
 			$wifidogconfline = "    SSLAvailable $_GET[authserverssl]" ;
-		    file_replace("/etc/wifidog.conf","    SSLAvailable .*", "$wifidogconfline \n");
+	        	$newwifidogconfline = trim($wifidogconfline);
+		    file_replace("/etc/wifidog.conf","    SSLAvailable .*", "$newwifidogconfline \n");
 			$wifidogconfline;
+			$newwifidogconfline = "";
 		}
 		
 		
