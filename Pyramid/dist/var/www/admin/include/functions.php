@@ -257,6 +257,9 @@ function get_modem() {
   elseif($modem == "/dev/usb/tts/0") {
     $modem = "EVDO";
   }
+  elseif($modem == "/dev/ttyUSB0") {
+    $modem = "EVDO";
+  }
   else {
     $modem = "None";
   }
