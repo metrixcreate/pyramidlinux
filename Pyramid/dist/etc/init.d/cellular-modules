@@ -1,5 +1,47 @@
 #!/bin/sh
 
-modprobe ohci-hcd
-modprobe usbserial  
-modprobe airprime
+
+function DetectCellModem {
+	VENDORID=$1 
+	PRODUCTID=$2
+	CARDEXISTS=""
+
+	exec < /proc/bus/usb/devices
+
+	while read LINE 
+	do
+
+		if echo $LINE | grep "P:" > /dev/null; then
+		
+			if echo $LINE | grep $VENDORID > /dev/null & echo $LINE | grep $PRODUCTID > /dev/null;then
+			CARDEXISTS="TRUE"
+			echo $CARDEXISTS
+			echo "0x"$VENDORID "0x"$PRODUCTID > /etc/cellmodem-id
+			modprobe usbserial vendor=0x$VENDORID product=0x$PRODUCTID
+			exit
+			fi
+		fi
+	done
+
+}
+			
+#sierra wireless aircard 580
+DetectCellModem 1199 0112
+
+#Kyrocera KPC650
+DetectCellModem 0c88 17da
+
+#Audiovox PC5740
+DetectCellModem 106c 3701
+
+# Novatel Merlin V620 v1
+DetectCellModem 1410 1110
+
+# Novatel Merlin V620 v2 
+DetectCellModem 1416 1110
+
+# Novatel Merlin S720 
+DetectCellModem 1410 1130
+
+#modprobe usbserial  
+#modprobe airprime
