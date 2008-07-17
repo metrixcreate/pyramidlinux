@@ -1,5 +1,7 @@
 #!/bin/sh
 
+IDFILE=/etc/cellmodem-id
+
 
 function DetectCellModem {
 	VENDORID=$1 
@@ -16,7 +18,7 @@ function DetectCellModem {
 			if echo $LINE | grep $VENDORID > /dev/null & echo $LINE | grep $PRODUCTID > /dev/null;then
 			CARDEXISTS="TRUE"
 			echo $CARDEXISTS
-			echo "0x"$VENDORID "0x"$PRODUCTID > /etc/cellmodem-id
+			echo "0x"$VENDORID "0x"$PRODUCTID > $IDFILE 
 			modprobe usbserial vendor=0x$VENDORID product=0x$PRODUCTID
 			exit
 			fi
@@ -42,6 +44,12 @@ DetectCellModem 1416 1110
 
 # Novatel Merlin S720 
 DetectCellModem 1410 1130
+
+#if we have made it this far and card not detected remove any existing ID files
+
+if [ -r $IDFILE ] then
+	rm $IDFILE
+fi 
 
 #modprobe usbserial  
 #modprobe airprime

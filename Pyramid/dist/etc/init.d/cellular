@@ -5,6 +5,12 @@ NAME="cellular"
 case "$1" in
   start)
   (
+    if [ -r /etc/cellmodem-id ] then
+    	echo "cell modem detected" 
+    else
+	exit
+    fi
+	
     rm -f /dev/cellmodem
     echo "" > /var/tmp/ppp-status
     # wait for a known device to show up
