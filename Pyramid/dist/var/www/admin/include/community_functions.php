@@ -131,7 +131,7 @@ function add_user( $user_info, $send_confirmation_email,$WiFiAdmin_BASE_URL){
      .$user_info['comment']. "', '" .$user_info['firstname']."', '" .$user_info['lastname']."', '".$user_info['password']."')";
 
 	$privilege = "INSERT INTO $USERS_DB.privileges
-	(username,view_status,view_macs,ban_users,access_ifs,edit_users, edit_privileges,  add_users  )
+	(username,view_status,view_macs,ban_users,access_ifs,edit_users, edit_privileges,  add_users, reboot_system  )
 	VALUES ('".$user_info['username']."','true','false','false','false','false','false','false')";
 
  	mysql_query($insert)

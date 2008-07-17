@@ -39,6 +39,7 @@ if ($_SESSION["access_ifs"]!="true"){
 	exit();
 }
 
+
 // default action
 if(!isset($_GET['action']))
 	$_GET['action'] = "show_system_settings";
@@ -58,7 +59,8 @@ switch ($_GET["action"]){
 
 		<p><fieldset title="Cellular Network Support">
 		<legend>Cellular Network</legend>
-		Cellular modem detected: <b><?echo get_modem();?></b> <i><?echo get_ppp_status();?></i>
+		Cellular modem status: <b><?echo get_modem();?></b> <i><?echo get_ppp_status();?></i>
+		<p><input type="checkbox" name="cellmodemservice" value="on" <?if (get_rc("S14cellular-modules") AND get_rc("S15cellular")) echo 'checked';?>>Enable/Disable Cell Modem, reboot required</p>
 		</fieldset></p>
 		
 		<p><fieldset title="Dynamic DNS">
@@ -88,128 +90,154 @@ switch ($_GET["action"]){
 
 		<input type ="hidden" name="action" value = "save_system_settings">
 		<input type="submit" value="Commit Changes">
-		</form><?
-		break;
-	case "save_system_settings":
-		echo "<h5>Saving System settings...</h5><ul>";
+	</form><?
+	break;
+case "save_system_settings":
+	echo "<h5>Saving System settings...</h5><ul>";
 
-		if(isset($_GET["hostname"])) {
-		  $hostname = escapeshellarg($_GET["hostname"]);
-		  if($hostname != "'".chostname()."'") {
-		    set_hostname($hostname);
-		    echo "<li>Hostname set to <b>".$hostname."</b>.</li>";
-		  }
-		}
+	if(isset($_GET["hostname"])) {
+	  $hostname = escapeshellarg($_GET["hostname"]);
+	  if($hostname != "'".chostname()."'") {
+	    set_hostname($hostname);
+	    echo "<li>Hostname set to <b>".$hostname."</b>.</li>";
+	  }
+	}
 
-		if(isset($_GET["domain"])) {
-		  $domain = $_GET["domain"];
-		  if($domain != get_domain()) {
-		    set_domain($domain);
-		    echo "<li>Domain set to <b>".$domain."</b>.</li>";
-		  }
-		}
+	if(isset($_GET["domain"])) {
+	  $domain = $_GET["domain"];
+	  if($domain != get_domain()) {
+	    set_domain($domain);
+	    echo "<li>Domain set to <b>".$domain."</b>.</li>";
+	  }
+	}
 
-		if(isset($_GET["ntpd"])) {
-		  if(!get_rc("S15ntpd")) {
-		    echo "<li>Enabling NTP daemon.</li>";
-		    set_rc("ntpd",15);
-		  }
-		}
-		else {
-		  if(get_rc("S15ntpd")) {  
-		    echo "<li>Disabling NTP daemon.</li>";
-		    set_rc("ntpd",0);
-		  }
-		}
-	
-		if(isset($_GET["sshd"])) {
-		  if(!get_rc("S20ssh")) {
-		    echo "<li>Enabling SSH daemon.</li>";
-		    set_rc("ssh",20);
-		  }
-		}
-		else {
-		  if(get_rc("S20ssh")) {  
-		    echo "<li>Disabling SSH daemon.</li>";
-		    set_rc("ssh",0);
-		  }
-		}
-	
+	if(isset($_GET["ntpd"])) {
+	  if(!get_rc("S15ntpd")) {
+	    echo "<li>Enabling NTP daemon.</li>";
+	    set_rc("ntpd",15);
+	  }
+	}
+	else {
+	  if(get_rc("S15ntpd")) {  
+	    echo "<li>Disabling NTP daemon.</li>";
+	    set_rc("ntpd",0);
+	  }
+	}
+
+	if(isset($_GET["sshd"])) {
+	  if(!get_rc("S20ssh")) {
+	    echo "<li>Enabling SSH daemon.</li>";
+	    set_rc("ssh",20);
+	  }
+	}
+	else {
+	  if(get_rc("S20ssh")) {  
+	    echo "<li>Disabling SSH daemon.</li>";
+	    set_rc("ssh",0);
+	  }
+	}
+
 /*		if(isset($_GET["dhcpd"])) {
-		  if(!get_rc("S20dhcp")) {
-		    echo "<li>Enabling dhcp server.</li>";
-		    set_rc("dhcp",20);
-		  }
-		}
-		else {
-		  if(get_rc("S20dhcp")) {  
-		    echo "<li>Disabling dhcp server.</li>";
-		    set_rc("dhcp",0);
-		  }
-		}
+	  if(!get_rc("S20dhcp")) {
+	    echo "<li>Enabling dhcp server.</li>";
+	    set_rc("dhcp",20);
+	  }
+	}
+	else {
+	  if(get_rc("S20dhcp")) {  
+	    echo "<li>Disabling dhcp server.</li>";
+	    set_rc("dhcp",0);
+	  }
+	}
 */
-		if(isset($_GET["bind"])) {
-		  if(!get_rc("S12bind")) {
-		    echo "<li>Enabling caching DNS server.</li>";
-		    set_rc("bind",12);
-		  }
+	if(isset($_GET["bind"])) {
+	  if(!get_rc("S12bind")) {
+	    echo "<li>Enabling caching DNS server.</li>";
+	    set_rc("bind",12);
+	  }
+	}
+	else {
+	  if(get_rc("S12bind")) {  
+	    echo "<li>Disabling caching DNS server.</li>";
+	    set_rc("bind",0);
+	  }
+	}
+
+	if(isset($_GET["cellmodemservice"])) {
+	  if(!get_rc("S14cellular-modules")) {
+	    echo "<li>Enabling cellmodem drivers.</li>";
+	    set_rc_no_start("cellular-modules",14);
+	  }
+	  if(!get_rc("S15cellular")) {
+	    echo "<li>Enabling cellmodem init script.</li>";
+	    echo "<li><a href=\"/admin/reboot.php\">Reboot</a> required for changes to take effect.</li>";
+	    set_rc_no_start("cellular",15);
+	    // rebootsys();
+	  }
+	}
+	else {
+	  if(get_rc("S14cellular-modules")) { 
+	    echo "<li>Disabling cellmodem drivers.</li>";
+            echo "<li><a href=\"/admin/reboot.php\">Reboot</a> required for changes to take effect.</li>";	
+	    set_rc_no_start("cellular-modules",0);
+	  }
+	  if(get_rc("S15cellular")) {
+	    echo "<li>Disabling cellmodem init scripts.</li>";
+	    set_rc_no_start("cellular",0);
+	  }
+	}
+
+
+	if(isset($_GET["modem"])) {
+	  if($_GET["modem"] != get_modem()) {
+	    // Only accept zones that are in the array
+	    foreach($modems as $modem) {
+	      if($modem == $_GET["modem"]) {
+		if($modem == "None") {
+		  echo "<li>Disabling cellular modem support.</li>";
 		}
 		else {
-		  if(get_rc("S12bind")) {  
-		    echo "<li>Disabling caching DNS server.</li>";
-		    set_rc("bind",0);
-		  }
+		  echo "<li>Enabling <b>".$modem."</b> cellular modem support.</li>";
 		}
+		set_modem($modem);
+	      }
+	    }
+	  }
+	}
 	
-		if(isset($_GET["modem"])) {
-		  if($_GET["modem"] != get_modem()) {
-		    // Only accept zones that are in the array
-		    foreach($modems as $modem) {
-		      if($modem == $_GET["modem"]) {
-		        if($modem == "None") {
-		          echo "<li>Disabling cellular modem support.</li>";
-		        }
-		        else {
-		      	  echo "<li>Enabling <b>".$modem."</b> cellular modem support.</li>";
-		      	}
-		        set_modem($modem);
-		      }
-		    }
-		  }
-		}
-		
-		if(isset($_GET["dyndns"]) && ($_GET["dyndns"] != "")) {
-		  if(get_dyndns() != $_GET["dyndns"]) {
-		    echo "<li>Setting up dyndns</li>";
-		    set_dyndns($_GET["dyndns"]);
-		  }
-		}
+	if(isset($_GET["dyndns"]) && ($_GET["dyndns"] != "")) {
+	  if(get_dyndns() != $_GET["dyndns"]) {
+	    echo "<li>Setting up dyndns</li>";
+	    set_dyndns($_GET["dyndns"]);
+	  }
+	}
 
-		if(isset($_GET["dyndnsupdate"]) && ($_GET["dyndnsupdate"] != "")) {
-		  echo "<li>Sending dyndns update</li>";
-	          update_dyndns();
-		}
+	if(isset($_GET["dyndnsupdate"]) && ($_GET["dyndnsupdate"] != "")) {
+	  echo "<li>Sending dyndns update</li>";
+	  update_dyndns();
+	}
 
-		if(isset($_GET["timezone"])) {
-		  if($_GET["timezone"] != get_zone()) {
-		    // Only accept zones that are in the array
-		    foreach($zones as $zone) {
-		      if($zone == $_GET["timezone"]) {
-		        set_zone($zone);
-		      	echo "<li>Setting timezone to <b>".$zone."</b>.</li>";
-		      }
-		    }
-		  }
-		}
-		
-		if(isset($_GET["sshkeys"])) {
-		  if(set_sshkeys($_GET["sshkeys"])) {
-		    echo "<li>Installing new SSH keys for <b>root</b></li>";
-		  }
-		}
-		
-		echo '</ul><p><a href="'.$_SERVER['PHP_SELF'].'">Back to System Settings</a>';
-		break;
+	if(isset($_GET["timezone"])) {
+	  if($_GET["timezone"] != get_zone()) {
+	    // Only accept zones that are in the array
+	    foreach($zones as $zone) {
+	      if($zone == $_GET["timezone"]) {
+		set_zone($zone);
+		echo "<li>Setting timezone to <b>".$zone."</b>.</li>";
+	      }
+	    }
+	  }
+	}
+	
+	if(isset($_GET["sshkeys"])) {
+	  if(set_sshkeys($_GET["sshkeys"])) {
+	    echo "<li>Installing new SSH keys for <b>root</b></li>";
+	  }
+	}
+
+
+	echo '</ul><p><a href="'.$_SERVER['PHP_SELF'].'">Back to System Settings</a>';
+	break;
 }
 
 

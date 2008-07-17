@@ -242,12 +242,20 @@ function bgprivcmd($cmd) {
 }
 
 /************************************************
+* rebootsys()
+* Reboot the system
+*************************************************/
+function rebootsys() {
+  return `/var/www/admin/include/reboot.sh &`;
+}
+
+/************************************************
 * get_modem()
 * Return the currently selected cellular modem
 *************************************************/
 function get_modem() {
   if(! file_exists('/dev/cellmodem')) {
-    return "None";
+    return "No modem found or modem not enabled";
   }
   
   $modem = readlink('/dev/cellmodem');
@@ -258,10 +266,10 @@ function get_modem() {
     $modem = "EVDO";
   }
   elseif($modem == "/dev/ttyUSB0") {
-    $modem = "EVDO";
+    $modem = "EVDO or HSDPA";
   }
   else {
-    $modem = "None";
+    $modem = "No modem found or modem not enabled";
   }
   return $modem;
 }
@@ -327,6 +335,20 @@ function set_rc($file,$priority) {
   else {
     privcmd("ln -sf /etc/init.d/$file /etc/rc2.d/S$priority$file",true);
     return privcmd("/etc/init.d/$file start",false);
+  }
+  //return true;
+}
+
+/************************************************
+* set_rc_no_start()
+* Enable or disable a service
+*************************************************/
+function set_rc_no_start($file,$priority) {
+  if($priority == 0) {
+    privcmd("rm -f /etc/rc2.d/S*$file",true);
+  }
+  else {
+    privcmd("ln -sf /etc/init.d/$file /etc/rc2.d/S$priority$file",true);
   }
   //return true;
 }

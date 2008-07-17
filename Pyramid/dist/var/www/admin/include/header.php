@@ -99,6 +99,10 @@ else
 	if(@($_SESSION["edit_users"]=="true")) {
 		echo '<li><a href="./users.php" class="menulink">Edit Users</a></li>';
         }		
+ 	if(@($_SESSION["reboot_system"]=="true")) {
+                echo '<li><a href="./reboot.php" class="menulink">Reboot System</a></li>';
+        }
+
 echo '
 	</ul>
 	</div>
