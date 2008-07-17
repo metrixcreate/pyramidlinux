@@ -5,7 +5,7 @@ NAME="cellular"
 case "$1" in
   start)
   (
-    if [ -r /etc/cellmodem-id ] then
+    if [ -r /etc/cellmodem-id ]; then
     	echo "cell modem detected" 
     else
 	exit

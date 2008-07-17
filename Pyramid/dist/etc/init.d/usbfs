@@ -1,0 +1,20 @@
+#!/bin/bash
+
+case "$1" in
+       start|reload|restart|force-reload)
+               mount -t usbfs usbfs /proc/bus/usb	
+               ;;
+       stop)
+	       umount /proc/bus/usb
+               ;;
+
+       status)
+	       mount | grep usbfs 
+	       ;;		
+       *)
+               echo "Usage: /etc/init.d/usbfs {start|stop|status}" >&2
+               exit 1
+               ;;
+esac
+
+

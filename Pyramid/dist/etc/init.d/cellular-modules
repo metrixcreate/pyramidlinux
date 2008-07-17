@@ -1,12 +1,15 @@
 #!/bin/sh
 
 IDFILE=/etc/cellmodem-id
+PROCUSB=/proc/bus/usb/devices
 
 
 function DetectCellModem {
 	VENDORID=$1 
 	PRODUCTID=$2
 	CARDEXISTS=""
+
+  if [ -r $PROCUSB ]; then 
 
 	exec < /proc/bus/usb/devices
 
@@ -24,6 +27,10 @@ function DetectCellModem {
 			fi
 		fi
 	done
+
+   else
+	echo $PROCUSB" does not exist"
+   fi 
 
 }
 			
@@ -47,7 +54,7 @@ DetectCellModem 1410 1130
 
 #if we have made it this far and card not detected remove any existing ID files
 
-if [ -r $IDFILE ] then
+if [ -r $IDFILE ]; then
 	rm $IDFILE
 fi 
 
