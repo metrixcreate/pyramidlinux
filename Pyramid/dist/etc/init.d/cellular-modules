@@ -21,7 +21,9 @@ function DetectCellModem {
 			if echo $LINE | grep $VENDORID > /dev/null & echo $LINE | grep $PRODUCTID > /dev/null;then
 			CARDEXISTS="TRUE"
 			echo $CARDEXISTS
+			/sbin/remountrw
 			echo "0x"$VENDORID "0x"$PRODUCTID > $IDFILE 
+			/sbin/remountro
 			modprobe usbserial vendor=0x$VENDORID product=0x$PRODUCTID
 			exit
 			fi
