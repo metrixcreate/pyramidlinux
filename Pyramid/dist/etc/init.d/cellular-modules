@@ -35,6 +35,9 @@ function DetectCellModem {
    fi 
 
 }
+
+#novatel usb u727 evdo
+DetectCellModem 1410 4100 
 			
 #sierra wireless aircard 580
 DetectCellModem 1199 0112
