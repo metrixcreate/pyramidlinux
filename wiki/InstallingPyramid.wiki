@@ -2,14 +2,14 @@ Installing Pyramid Linux can be done a couple of different ways. Installation in
 
 If you have Soekris board with non-removable flash, PXE network based installation is your only option unless you have an existing OS running on it. PXE Network installation can be complicated and requires many components (http server, tftp server, dhcp server). To make this easier Metrix has produced a Live CD image with a complete PXE environment that you can boot on a laptop or PC. Simply booting this Live CD and running one command, you should have everything up and running to install or upgrade Pyramid on your system. If you have an existing running OS, you can [wiki:InstallingPyramid/UpgradingImg Upgrade an existing install with a .img.gz]
 
-[wiki:InstallingPyramid/PxeBootLiveCD PXE Installation with Metrix Live CD]
+[wiki:PxeBootLiveCD PXE Installation with Metrix Live CD]
 
-[wiki:InstallingPyramid/PxeBoot PXE Installation]
+[wiki:PxeBoot PXE Installation]
 
-[wiki:InstallingPyramid/PxeBootWin PXE Installation from Windows]
+[wiki:PxeBootWin PXE Installation from Windows]
 
-[wiki:InstallingPyramid/DD Compact Flash Card Installation using DD in Linux or BSD]
+[wiki:Installing/DD Compact Flash Card Installation using DD in Linux or BSD]
 
-[wiki:InstallingPyramid/PhysDiskWrite Compact Flash Installation using PhysDiskWrite on Windows]
+[wiki:PhysDiskWrite Compact Flash Installation using PhysDiskWrite on Windows]
 
-[wiki:InstallingPyramid/UpgradingImg Upgrading an existing install with a .img.gz]
+[wiki:UpgradingImg Upgrading an existing install with a .img.gz]
