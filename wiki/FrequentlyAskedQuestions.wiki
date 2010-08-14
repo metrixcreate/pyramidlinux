@@ -27,7 +27,7 @@ Use a PXE install environment to install the system. Check out the InstallingPyr
 
 *''Can I upgrade from Pebble?''*
 
-If you are working on a Soekris 4526 or 4826, and you already have Pyramid or Pebble installed, you can use InstallingPyramid/UpgradingImg
+If you are working on a Soekris 4526 or 4826, and you already have Pyramid or Pebble installed, you can use UpgradingImg
 
 
 == Captive Portals ==
