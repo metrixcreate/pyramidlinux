@@ -214,6 +214,57 @@ remountro
 
 Now switch the power off and on again for the last time! Since this boot the kernel option you are passing will allow correct reboots! :)
 
+*'' How do I enable the Ethernet ports on a PC Engines Alix board?''*
+
+We need to add the Via Rhine module to `/etc/modules/', to do this you need to edit the modules file as follows.
+
+{{{
+# /sbin/rw
+# nano /etc/modules
+}}}
+
+Here is a example of the modules file.
+
+{{{
+# /etc/modules: kernel modules to load at boot time.
+#
+# This file should contain the names of kernel modules that are
+# to be loaded at boot time, one per line.  Comments begin with
+# a "#", and everything on the line after them are ignored.
+#
+# hostap and madwifi
+#
+hostap_pci
+ath_pci autocreate=none
+#
+# natsemi for Ethernet
+# 
+natsemi
+#
+# via-rhine for Ethernet on Alix Boards 
+#
+via_rhine
+#
+# elan 520 watchdog timer ( soekris 45XX series or Metrix Mark I)
+# (run "/etc/init.d/watchdog start" to initialize it)
+#
+}}}
+You need to add these lines
+{{{
+#
+# via-rhine for Ethernet on Alix Boards 
+#
+via_rhine
+}}}
+
+Save and exit nano by issuing `ctrl + x` and follow the prompts.
+Remount the file system read only and reboot.
+
+{{{
+# /sbin/ro
+# reboot
+}}}
+
 
 == Setting Up a Pyramid Development Environment ==
 
