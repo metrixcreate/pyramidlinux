@@ -11,9 +11,9 @@ Official Releases are always available at http://dl.metrix.net/support/dist/
 
 Quick story:
 
-~~svn export http://pyramid.metrix.net/svn/Pyramid/dist/~~
+~~svn export http://pyramid.metrix.net/svn/Pyramid/dist/ ~~
 
 
 Long story:
 
-~~http://pyramid.metrix.net/trac/browser/Pyramid/build/pyramid-export.sh~~
+~~http://pyramid.metrix.net/trac/browser/Pyramid/build/pyramid-export.sh ~~
