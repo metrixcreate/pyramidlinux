@@ -1,0 +1,45 @@
+=== About the Live CD ===
+
+This LiveCD is provided free of cost to make single board computer bootstrapping easy. If you wish to support the LiveCD and Pyramid development you can
+purchase your hardware from http://metrix.net or donate via paypal to *''paypal@metrix.net''*. However neither is required or expected. 
+
+The Metrix PXE Live CD can be downloaded from: http://dl.metrix.net/support/livecd/  It is an ISO image that should be burned to a CD.
+
+The Live CD is an Ubuntu Live Environment meaning it has a Linux installation that will run entirely from CD without having to install Linux on your computer. Once booted it has all the software needed to install an OS on your embedded system. 
+
+In addition to Pyramid Linux you can also install a variety of other embedded operating systems we have included on the CD such as M0n0Wall, PFSense, CuWin and ASTLinux.
+
+=== Prerequisites ===
+
+Before starting you should make sure you have the following:
+
+ # The system you wish to install Pyramid on
+ # A X86 PC or Laptop that is capable of booting from CD-ROM and also has an ethernet NIC and serial port
+ # A serial cable 
+ # A crossover cable (or if your PC does auto-mdx, a normal ethernet cable will do)
+ # A copy of the CD burned from the iso which resides at: http://dl.metrix.net/support/livecd/
+ # UpdateLiveCd to see about how you update the Live CD to install the latest version if it doesn't yet contain it, or you don't want do re-download the whole thing
+
+=== How to use the CD ===
+
+ # Connect a crossover cable between your target system and the laptop or PC which will run the live CD
+ # Connect the the serial cable between the target system's console port and the serial port on your laptop
+ # Boot the PC with the Live CD, making sure your system is configured to boot from CD-ROM
+ # Wait for the LiveCD to boot, on older systems this can take a little while
+ # Once the system has booted and you are at the standard Ubuntu desktop, open the terminal program from the Applications -> Accesories menu
+ # From the terminal prompt type the "su" command to become the root super user. When prompted for a password enter the root password which is "root"
+ # Type the command "pxe-start.sh" and hit enter. This script will configure the eth0 interface and start the necessary services.
+ # Start a terminal program to access the serial port. The speed you should use is 19200. You can use Minicom or screen both are provided on the LiveCD.
+  * To use minicom, for instance, start it with: "minicom -o -s" (to enter setup mode)
+  * Go to "Serial Port Setup" and change the serial port device (maybe /dev/ttyUSB0?) and the speed (19200)
+  * Save the configuration as the default ("dfl"), exit, and then start minicom without any options
+  * Power on the device and it should start booting
+ # Power up your embedded system and force it to boot from the network. With Soekris devices this done by hitting "Ctrl-P" in the bios and typing "boot f0" at the ">" prompt
+ # You should now see a text menu with the options of operating systems to install, pick one and wait for the installation to finish. The install scripts will reboot the system when it is finished.
+ # Done.
+
+=== LiveCD under VMWare Player ===
+
+VMWare has a free player, and with [http://www.vmware.com/vmtn/appliances/directory/284 this appliance] you can  boot the livecd in windows.   The only way to learn a new programming language is by writing programs in it.
+- Brian Kernighan
+ 
