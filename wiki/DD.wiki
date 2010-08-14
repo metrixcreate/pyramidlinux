@@ -1,0 +1,47 @@
+== Installing an Pyramid image via the "dd" command ==
+
+This assumes that you have a linux or BSD based box with a Compact Flash card reader. In this process we will use the "dd" command to take the data from a PyramidImageFile to Compact Flash Card. This will only work with a '''image''' file, not a tar archive. 
+
+1. Download the the image file using [http://www.gnu.org/software/wget/ wget]:
+
+{{{
+
+wget http://metrix.net/support/dist/pyramid-1.0b1.img.gz
+
+}}}
+
+2. Decompress the image:
+{{{
+
+gunzip pyramid-1.0b1.img.gz
+
+}}}
+
+3. Use DD to transfer the image to your compact flash card, replacing "sda" with the device name of your compact flash card. It is very important to make sure you have the right device name. This will overwrite whatever is on the device specified in "of=". 
+
+
+{{{
+
+dd if=pyramid-1.0b1.img of=/dev/sda bs=512
+
+}}}
+
+In the above example the compact flash drive shows up as '''/dev/sda''', you should check
+what your system sees the CF drive as by checking the output of the '''dmesg''' command after
+inserting the compact flash adapter into your USB port or PCMCIA slot.
+
+If the compact flash card (or hard disk) you're using has a larger capacity than the 80M Pyramid uses by default, you can use the remaining space as follows:
+
+1. DD the image onto the card as described above.
+
+2. Resize the partition (e.g. '''/dev/sda1''') using [http://www.gnu.org/software/parted/index.shtml Parted].  This ought to be possible using fdisk, but I've messed it up every time I try.
+
+3. Resize the file system to fill the partition:
+
+{{{
+
+resize2fs -p /dev/sda1
+
+}}}
+
+ 
