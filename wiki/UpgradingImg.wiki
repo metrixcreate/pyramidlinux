@@ -1,0 +1,39 @@
+*''Upgrading to a newer version from an older version of Pebble or Pyramid with a .img.gz file''*
+
+Note: this method has known issues with the Metrix mark 1 (Soekris net4526 motherboard) kits. Until the source of this issue is found, chances of successfully upgrading that particular model using this method are slim. You'll probably need to do a PXE install to be successful.
+
+This is especially important if you are working on a Soekris 4526 or 4826 and can't easily just write the image to a CF card, and you already have Pyramid or Pebble installed. You can upgrade using the following command (NOTE: THIS WILL OVERWRITE YOUR EXISTING SYSTEM, BACKUP ANY IMPORTANT CONFIGURATIONS BEFORE DOING THIS):
+
+To upgrade from Pyramid:
+{{{
+wget -O - http://metrix.net/support/dist/pyramid-1.0b5.img.gz | gunzip > /dev/hda
+}}}
+To upgrade from Pebble:
+{{{
+wget -O - http://metrix.net/support/dist/pyramid-1.0b5.img.gz | gunzip > /dev/discs/disc0/disc 
+}}}
+
+After you execute the command above, it will take a few minutes to download the disk image, decompress it, and write it to the integrated flash disk. When you see the command prompt reappear, you should reboot the box immediately. For me the system segfaulted, then locked up. After cycling the power it came up with the new version sans config as expected. 
+
+  Since the underlying filesystem is (in general) trashed during the write, at the conclusion you shouldn't expect anything to work, even to just reboot (though if the new image shares enough structure with the old image, it might still work well enough to reboot). I built a statically-linked rebooter, called "poison.c", compiled with Breezy, that I preposition in /rw/tmp.  I cd to /rw/tmp, run the flash from there, then immediately run ./poison to reboot.  That seems to work if you do it right away.  It didn't work once when I waited... maybe a daemon tried to fork something that wasn't there anymore or something, not sure.  Here is my poison.c:
+{{{
+#include <sys/reboot.h>
+int main () { reboot(RB_AUTOBOOT); }
+}}}
+  compiled with:
+{{{
+gcc -o poison -static poison.c
+}}}
+  This is the sequence I have been using:
+{{{
+cd /rw/tmp
+scp <user>@<host>:<path>/poison .
+ssh <user>@<host> 'dd if=new-image.img' | dd of=/dev/hda bs=64k
+./poison
+}}}
+
+  Doing bench trials of this with a Soekris net4526 (Mark I) and net4826 (Mark II), I have seen some consistent corruption of the flashed image, starting at byte 59408385.  I've tried with and without the dd, with a statically linked dd, with ssh and wget.  Always (~6 times in a row) the same exact corruption (md5sum of corrupted image matches), flashing from a Pebble-based image to a Pyramid-based image.  I am able to rewrite the damaged portion after a reboot, and then the md5sum matches the image I intended to flash.  --RussellSenior
+
+I have had A Metrix Kit Mark II upgrade from b1 to b4 just fine, then a Metrix Kit Mark I end up failing trying the same exact thing (WiFi came up, but TCP/IP never did and the OS was generally trashed, I had to pull the box down and do a PXE install to fix it, which worked fine). Be prepared to do a PXE install if need be should this method fail.
+
+For better performance, it is reccomended you copy the .img.gz file to a locally hosted FTP or web server. Change the URL as appropiate for the location and version you intend to install.
