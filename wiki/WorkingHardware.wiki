@@ -1,0 +1,10 @@
+This page is an attempt to document hardware platforms and devices known to work with Pyramid linux. Please feel free to add to it if find an 
+unlisted piece of hardware.
+
+== Working Hardware ==
+
+|| Manufacturer  ||  Model ||  Notes ||
+|| [http://metrix.net Metrix] || Mark I and Mark II || Based on Soekris 4526 and 4826 boards  ||
+|| [http://soekris.com Soekris] || all Net45XX boards ||  ||
+|| [http://soekris.com Soekris ] || all Net48XX boards || ||
+|| [http://www.pcengines.ch/wrap.htm PC Engines ] || Wrap Boards || Basic functionality tested, cf, mini-pci, microdrive || 
