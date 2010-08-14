@@ -9,7 +9,7 @@ By Martin Stevens
  * ModifyImageFile
  * ExpandPartionSoekris4826
 
-== Using HardwareWatchdog ==
+== Using Hardware Watchdog ==
  
  * HardwareWatchdog
 
@@ -24,6 +24,4 @@ By Carla Schroder
  * [http://www.enterprisenetworkingplanet.com/nethub/article.php/3627861 Part 2]
  * [http://www.enterprisenetworkingplanet.com/nethub/article.php/3629216 Part 3]
  * [http://www.enterprisenetworkingplanet.com/nethub/article.php/3631896 Part 4]
-
-
 
