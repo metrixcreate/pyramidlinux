@@ -1,0 +1,231 @@
+# PXE #
+
+PXE stands for Preboot Execution Environment. It is a specification that allows for bootstraping a network enabled system without using any local media. In the PXE boot process a ROM on the network adapter requests a DHCP lease, and if given the proper information will download a base OS kernel via tftp, load it into RAM and boot it. There are two primary applications for PXE Boot:
+
+### 1. Diskless computers: ###
+
+> -Computers that boot entirely off the network without any local disk. After downloading the kernel and booting they will generally attempt to mount their filesystems via a network file system such as NFS.
+
+### 2. Bootstrapping an OS installation ###
+
+> -Computers boot a base kernel and OS of the network, and start an Operating System install downloading the OS from the network usually via NFS, HTTP or FTP.
+
+We are concerned with the second. Getting an OS on our box.
+
+There are a couple of core components required for PXE environment:
+
+### DHCP Server: ###
+
+DHCP stands for Dynamic Host Configuration Protocol. It most widely known as the service that gives you a dynamic IP address when connecting to a network. The DHCP protocol supports many different configuration options that can be delivered to the DHCP client by the DHCP server.
+
+In our case the DHCP client is the box we want to install.
+
+### TFTP Server: ###
+
+TFTP stands for trivial file transfer protocol. Not to be confused with FTP. TFTP uses UDP for transport and does not include any authentication. TFPT is not considered a very secure protocol there for it is suggest that you run it only in a controlled environment where you know who is on the network.
+
+### HTTP Server: ###
+
+An HTTP server is a server that serves files and most often web pages via the HTTP protocol, most commonly to web browsers.
+
+
+# Basic Concepts #
+
+The basic concept is simple.
+
+A machine boots and makes a DHCP request
+
+The machine recieves a lease from the DHCP server, the lease contains the IP configuration, the address of a TFTP server, and a file to download. The tftp section is providing the kernel used for booting.
+
+The machine downloads the kernel and boots the kernel
+
+The machine now running the kernel downloads the initrd image with a root file system and drivers.
+
+Once that is done, The machine is now able to load a new OS image from the httpd server.
+
+# Setting up a PXE Environment #
+
+## Installing the required software ##
+
+To setup the PXE environment you need you need to have the all the components mentioned above, a tftp, dhcp and http server. They do not need to all reside on the same machine, but we will assume they do in this document.
+
+In our lab we use Ubuntu for our PXE server. Installing the required components in Ubuntu is quite easy using the package management system. We will use the "apt-get" command to install the required software:
+
+```
+
+apt-get install apache2
+
+```
+
+
+Next we will install the tftp server:
+
+```
+
+apt-get install tftpd-hpa
+
+```
+
+Then the dhcp server
+
+```
+
+apt-get install dhcp
+
+```
+
+## Configuring tftp, dhcp and apache ##
+
+**''tftpd''**
+
+You'll need to set up a directory for your tftpserver, it's common to use
+/tftpboot.
+
+note that /tftpboot needs to be readable by the tftpd process however you run it.
+It's worth taking the time to read the in.tftpd manpage. In my test case, I set
+the perms on /tftpboot to 777, and just rm the directory when I'm finished.
+
+Change into the tftpdirect and get the bits you'll need
+
+
+> You'll need the tftp bits from subversion.
+```
+svn export http://pyramid.metrix.net/svn/PXE
+```
+
+Once they are all received, move the contents of the PXE directory
+into the root tftpboot directory. (Note that most of the initrd images appear to be minix filesystems)
+
+Start the tftpd server in listen mode pointing at the directory as such
+```
+# in.tftpd -l -a 192.168.200.1:69 -c -s /tftpboot
+```
+note the -c switch isn't really needed
+
+
+**''dhcpd''**
+
+
+```
+# dhcpd.conf
+#
+# Configuration file for ISC dhcpd (see 'man dhcpd.conf')
+#
+#add the ddns-update for later versions of isc dhcpd, 
+#it will complain and perhaps not run if not present
+
+ddns-update-style ad-hoc;
+
+
+
+subnet 192.168.200.0 netmask 255.255.255.0 {
+  range 192.168.200.100 192.168.200.200;
+
+##
+# If 192.168.200.1 is also an internet gateway and you
+# want your PXE booted device to be able to route to it on
+# boot, uncomment these lines.
+##
+   option routers 192.168.200.1;
+   option domain-name-servers 10.15.1.1;
+
+  allow booting;
+  allow bootp;
+
+  next-server 192.168.200.1;
+  filename "/pxelinux.0";
+
+  max-lease-time 60;
+  default-lease-time 60;
+}
+
+```
+
+**''apache''**
+
+In the root directory of your webserver, you'll need to make some symlinks. [[BR](BR.md)]
+
+
+Firstly, you need to get the dd image and the os tarball. [[BR](BR.md)]
+
+The dd image can simply be downloaded from http://dl.metrix.net/support/dist/  [[BR](BR.md)]
+
+The os tarball, however, must be created by running the pyramid-export.sh script, which you can download here: http://pyramid.metrix.net/trac/browser/Pyramid/build/pyramid-export.sh?format=raw  [[BR](BR.md)]
+
+Once you have downloaded the script you need to make it executable and then run it:[[BR](BR.md)]
+
+```
+chmod +x pyramid-export.sh
+./pyramid-export.sh
+```
+
+The script will then grab the latest os using svn, and then create a tarball when it's finished. The script creates a new directory within the directory it resides in, called 'work'. The tarball will be placed in there once the script has finished (it can take a little while) and is named 'pyramid-[currentdate](currentdate.md).tgz'
+
+Once this is done, you can create the symlinks (in the root directory of your webserver):
+
+**''dd images'''**
+
+image -> pyramid-1.0b1.img
+
+```
+ln -s pyramid-1.0b1.img image
+```
+
+**''os tarballs''**
+
+os -> pyramid-15:05:05-07-28-06.tar
+
+```
+ln -s pyramid-15:05:05-07-28-06.tar os
+```
+
+
+## Booting the box ##
+
+Once the environment is set up, plug in your null modem serial cable to your host machine and your board and power the board on.
+
+Use minicom, screen, or your favorite serial program to get a terminal.   Use 19200 8N1 for your terminal settings.
+
+If the board has never been flashed (or you have an empty CF), it will see that there is no OS on the flash, grab an IP and display the PXE menu.   If there is an OS already on the board, you will have to hit ctrl-P to stop the boot process, and at the prompt, type:
+
+```
+boot f0
+```
+
+The next thing you should see is the PXE boot menu.
+
+
+```
+            MMMMMM     ,MMMMMN                                                  
+             MMMMM8     $MMMMM?                                                 
+              MMMMMM     ~MMMMMO                                                
+               MMMMMM     ~MMMMMO                                               
+                MMMMM$     8MMMMM~                                         
+        DMD     ,MMMMMN     ?MMMMM                                 
+      +MMMMMM    ,MMMMMN     ?MMMMM7                 
+      NMMMMMM     7MMMMM+     NMMMMM,  
+       MMMMM+      ~MMMMMZ     $MMMM8 
+                    ~MMMM       =MMM=
+
+Pyramid Linux, brought to you by .\\etrix Communication LLC
+
+You have 10 seconds to choose an option from the menu below
+otherwise after 10 seconds has elasped option 1 will 
+automatically start. You may also pass kernel parameters at 
+this time if desired.
+
+Choose from one of the following:
+
+# Start the automated Pyramid Linux install process via dd image file
+
+# Start the automated Pyramid Linux install process via fdisk and tarball
+
+# Boot the Pyramid Linux kernel with a shell prompt
+
+# Boot the Pebble Linux install process 
+
+# Boot the Pebble Linux kernel with a shell
+
+# Install the latest snapshot
+
+```

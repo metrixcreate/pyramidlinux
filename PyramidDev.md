@@ -1,0 +1,7 @@
+# Setting Up a Pyramid Development Environment #
+
+If you are interested in building a development environment, you will need to use Ubuntu Breezy as your starting point. Since the official mirrors have mostly been pulled, feel free to use ours. If you are just adding a binary or lib from the standard dist, it's extremely straightforward.
+
+Just change your sources in /etc/apt/sources.list (on your dev box) to:  http://metrix.net/ubuntu/
+
+The kernel config is located on a running box at /proc/config.gz

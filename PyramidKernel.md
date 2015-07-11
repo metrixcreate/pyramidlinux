@@ -1,0 +1,28 @@
+### Pyramid Kernel ###
+
+This page aims to be a starting point for documentation related to the linux kernel in pyramid. Things like documentation for building new kernels, adding modules, adding third party kernel modules etc should be documented here or on sub pages.
+
+Sub Pages:
+
+  1. [AddingModules](AddingModules.md) - Adding kernel modules
+
+### Current Version ###
+
+```
+
+metrix:/# uname -a
+Linux metrix 2.6.19.2-pyramid.metrix.net #1 PREEMPT Wed Jan 24 10:23:57 PST 2007 i486 GNU/Linux
+
+```
+
+The pyramid kernel config can be found gzipped in /proc/config.gz
+
+### Will we upgrade the Pyramid kernel? ###
+
+At some point in the future we will be updating the kernel in Pyramid. However before we do that we need to have some tools in place to make things less confusing:
+
+1. We need an automated build process that fetches the latest release from kernel.org and builds it for use in Pyramid.
+
+2. We need a little more documentation on kernel patches that we may use, and probably a place to store them in SVN.
+
+3. Documentation on kernel compilation for Pyramid should happen first as well, this way more people can actually help in other steps.

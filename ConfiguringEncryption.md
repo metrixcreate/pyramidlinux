@@ -1,0 +1,129 @@
+# Configuring encryption on your Pyramid WiFi links #
+
+One of the first things you should do after getting your new AP's up and running, is configure some kind of encryption to secure them.
+
+WEP has been proven pretty insecure and shouldn't be used unless there's no other option. That leaves WPA and WPA2. The client is the node that is in managed mode and the host is the one in master mode. You can have a client and host on the same node if you have 2 interfaces, such in a point to point link with a hotspot running on the 2nd interface.
+
+## The client ##
+The client end of the connection is managed by wpa\_supplicant, and it's config file /etc/wpa\_supplicant.conf. The command "wpa\_passphrase secretnet secretpassword" will generate the config file for a connection with the ESSID secretnet and using the password secretpassword.
+
+  * /sbin/rw #change the filesystem to read/write so we can edit/make the configs
+  * wpa\_passphrase secretnet secretpassword > /etc/wpa\_supplicant.conf # make the config and redirect output to the file instead of the screen
+
+Now you should have a config looking like:
+
+```
+network={
+        ssid="secretnet"
+        #psk="secretpassword"
+        psk=24fc83b3bfca70fd15a7f64a2f0a4dfdc0849fbd4b91484762d925193cfcff02
+}
+```
+
+You can delete the text for the passphrase but it does not provide better security because you already have the key in this file.
+
+Now lets start it up. Edit /etc/network/interfaces and find the section with the name of the interface this client is suppose to provide encryption for (probably ath0), and add the commands to start wpa\_supplicant when the interface comes up, and stop it when it goes down.
+
+```
+        up wpa_supplicant -Dmadwifi -iath0 -c/etc/wpa_supplicant.conf -Bw
+        down killall wpa_supplicant
+```
+
+The default "wpa\_supplicant -iath0 -c/etc/wpa\_supplicant.conf -Bw" didn't seem to work on my Atheros based card and generated "ioctl[PRISM2\_IOCTL\_HOSTAPD](PRISM2_IOCTL_HOSTAPD.md): Operation not supported" errors until I forced it to use the MadWiFi drivers with -Dmadwifi. Also note there is no space between the -i and the interface name.
+
+## The host ##
+> Next up is configuring the host, which is run by hostapd and it's config file /etc/hostapd.conf
+
+Use the following config, and update it for your network:
+
+```
+interface=ath0
+driver=madwifi
+logger_syslog=-1
+logger_syslog_level=2
+logger_stdout=--1
+logger_stdout_level=2
+debug=0
+ctrl_interface_group=0
+macaddr_acl=0
+deny_mac_file=/etc/hostapd.deny
+auth_algs=3
+eapol_key_index_workaround=0
+eap_server=0
+dump_file=/tmp/hostapd.dump
+ssid=secretnet
+wpa=1
+wpa_psk=24fc83b3bfca70fd15a7f64a2f0a4dfdc0849fbd4b91484762d925193cfcff02
+#wpa_passphrase=secretpassword
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP CCMP
+```
+
+  * Update the interface if needed
+  * Update the driver if needed
+  * Use the psk= line from your wpa\_supplicant.conf file for your wpa\_psk= line
+  * You can use the plain password instead of the hashed one, but it's not as secure, and has to be computed each time the daemon starts, slowing things down
+  * somewhere along the line "touch /etc/hostap.deny" to create the file, and edit it if need be
+
+To start is all up we add a statement to /etc/network/interfaces under the appropriate interface again:
+
+```
+    up hostapd -B /etc/hostapd.conf
+```
+
+## References ##
+
+  * [Linux on Your WLAN: Configure WPA](http://www.enterprisenetworkingplanet.com/netsecur/article.php/3594946)
+  * [wpa\_supplicant.conf(5) - Linux man page](http://www.die.net/doc/linux/man/man5/wpa_supplicant.conf.5.html)
+  * [MadWiFi: Using HostAP](http://madwifi.org/wiki/UserDocs/HostAP)
+
+This is just a quick and dirty compilation of my experiences getting WPA up and running on my 2 Metrix boxes, hopefully it should provide a decent starting guide for others. Please feel free to update it. [Devin Noel](http://www.fallonz.com)
+
+
+## Ubuntu clients example ##
+
+This how I got both Kubuntu Edgy and Ubuntu Dapper DHCP clients working correctly, both using Atheros cards and MadWiFi drivers. Generate a key and create wpa\_supplicant.conf files on the clients just as it shows above. I also added 'proto' and 'key\_mgmt' lines:
+
+
+```
+network={
+        ssid="secretnet"
+        proto=WPA
+        key_mgmt=WPA-PSK
+        #psk="secretpassword"
+        psk=24fc83b3bfca70fd15a7f64a2f0a4dfdc0849fbd4b91484762d925193cfcff02
+}
+```
+
+
+Test your key with this command:
+
+
+```
+$ sudo wpa_supplicant -iath0 -c/etc/wpa_supplicant.conf -Dmadwifi -w
+  Trying to associate with 00:ff:00:1e:a7:7d (SSID='NetworkEssid' freq=0 MHz)
+  Associated with 00:ff:00:1e:a7:7d
+  WPA: Key negotiation completed with 00:ff:00:1e:a7:7d [PTK=TKIP GTK=TKIP]
+```
+
+
+That shows success.
+Hit CTRL+C . Now edit /etc/network/interfaces like this:
+
+
+```
+auto ath0
+iface ath0 inet dhcp
+wpa-driver madwifi
+wpa-conf /etc/wpa_supplicant.conf
+```
+
+
+Do sudo ifdown ath0, sudo ifup ath0 and you should get a nice authenticated
+and encrypted wireless session, and a DHCP lease.
+
+This page helped:
+
+https://help.ubuntu.com/community/WifiDocs/WPAHowTo
+
+Carla Schroder, carla@bratgrrl.com

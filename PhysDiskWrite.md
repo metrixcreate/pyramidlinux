@@ -1,0 +1,66 @@
+## Installing an Pyramid image from a Windows box ##
+
+If you are running Windows, you can use a utility from the [m0n0wall](http://m0n0.ch/wall) project to read the compressed image and write it to a CF.  You can do this as follows:
+
+  1. Download the Pyramid image you need for your device from http://metrix.net/support/dist/ - look for downloads that end in `.img.gz`
+  1. Download the CF writing utility from http://m0n0.ch/wall/physdiskwrite.php
+  1. Unzip physdiskwrite
+  1. Go to a cmd prompt (Start -> Run -> cmd)
+  1. Enter the command, substituting the appropriate image filename for the example one below:
+
+```
+  physdiskwrite pyramid-1.0b5-img.gz
+```
+
+Physdiskwrite will prompt you to choose the correct drive to write to. '''This is a good time to be paranoid.''' I first run the program with no CF installed, and then again with the CF. Then I can be sure I'm going to write to the correct card. For example, with no CF, my machine displays:
+
+```
+  D:\bin>physdiskwrite pyramid-1.0b5-img.gz
+
+  physdiskwrite v0.5.1 by Manuel Kasper <mk@neon1.net>
+  
+  Searching for physical drives...
+  
+  Information for \\.\PhysicalDrive0:
+     Windows:       cyl: 19458
+                    tpc: 255
+                    spt: 63
+  
+  Information for \\.\PhysicalDrive1:
+  DeviceIoControl() failed on \\.\PhysicalDrive1.
+  
+  Information for \\.\PhysicalDrive2:
+  DeviceIoControl() failed on \\.\PhysicalDrive2.
+  
+  
+  Which disk do you want to write? (0..0)  ^C
+```
+
+Use CTRL-C to exit physdiskwrite. Then insert the CF. My display changes to:
+
+```
+  Information for \\.\PhysicalDrive0:
+     Windows:       cyl: 19458
+                    tpc: 255
+                    spt: 63
+  
+  Information for \\.\PhysicalDrive1:
+  DeviceIoControl() failed on \\.\PhysicalDrive1.
+  
+  Information for \\.\PhysicalDrive2:
+     Windows:       cyl: 7
+                    tpc: 255
+                    spt: 63
+```
+
+Drive 2 has changed now that it has a 64MB CF card inserted. Go ahead and enter the number for your drive (2 in this case), confirm the write with 'y' and you should see similar output to this:
+
+```
+  Which disk do you want to write? (0..2) 2
+  About to overwrite the contents of disk 2 with new data. Proceed? (y/n) y
+  Found compressed image file
+  64028672/64028672 bytes written in total
+```
+
+Congratulations! Your CF is now ready to install into your computer. Many people write memos to tell you they have nothing to say.
+
